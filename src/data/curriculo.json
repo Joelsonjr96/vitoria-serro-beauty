@@ -1,0 +1,105 @@
+{
+ "curso": {
+ "titulo": "Apostila Curso Lash Designer - Iniciante",
+ "autora": "Vitória Serro Beauty",
+ "fisiologia_ciclo_fios": {
+ "fases_crescimento": [
+ {
+ "nome": "Anágena",
+ "descricao": "Fase de crescimento ativo do fio. Fios jovens/baby são frágeis e devem ser evitados para extensão.",
+ "duracao_dias": "30 a 45 dias"
+ },
+ {
+ "nome": "Catágena",
+ "descricao": "Fase de transição/contenção do folículo piloso onde o fio para de crescer. Ideal para aplicação de extensão.",
+ "duracao": "2 a 3 semanas"
+ },
+ {
+ "nome": "Telógena",
+ "descricao": "Fase de repouso prévia à queda do fio.",
+ "duracao_dias": "Até 100 dias"
+ }
+ ],
+ "ciclo_total_dias": "90 a 100 dias",
+ "durabilidade_media_extensao": "21 dias (3 semanas)",
+ "intervalo_manutencao_recomendado": "15 a 20 dias"
+ },
+ "anamnese_contraindicacoes": {
+ "importancia": "Avaliar histórico de saúde, alergias, sensibilidade, alterações hormonais (ex: disfunção de tireoide não tratada acelera a queda dos fios) e definir o mapping ideal.",
+ "contraindicacoes_estritas": [
+ "Pessoas em tratamento oncológico (liberação somente 6 meses após o término)",
+ "Glaucoma",
+ "Uso de lentes de contato durante o procedimento",
+ "Gestantes (apenas com autorização médica)"
+ ],
+ "teste_alergia": "Realizar 48 horas antes do procedimento aplicando 1 gota de cola na pele ou 2 fios sintéticos no canto externo de um dos olhos."
+ },
+ "adesivo_cola": {
+ "composicao_principal": "Cianoacrilato",
+ "parametros_ambiente": {
+ "temperatur-ideal": "19°C a 23°C",
+ "umidade_ideal": "40% a 60%"
+ },
+ "tempo_secagem": {
+ "iniciantes": "1.5 a 2.0 segundos",
+ "avancado_rapido": "0.5 a 1.0 segundo"
+ },
+ "armazenamento_manuseio": [
+ "Guardar em local fresco, seco e protegido da luz solar direta.",
+ "Utilizar Magic Pack ou pote hermético com sílica gel.",
+ "Agitar energeticamente por 2 minutos antes do primeiro uso do dia.",
+ "Validade após aberta: até 2 meses."
+ ],
+ "polimerizacion_cura": "Processo de secagem total que dura até 24 horas. Exige que a cliente evite contato com água ou vapor nesse período."
+ },
+ "tecnicas_fios_curvaturas": {
+ "tecnicas": [
+ {
+ "nome": "Fio a Fio Clássico",
+ "descricao": "Aplicação de 1 fio sintético isolado sobre 1 fio natural (120 a 180 fios por olho)."
+ },
+ {
+ "nome": "Volume Brasileiro",
+ "descricao": "Aplicação de fios tecnológicos unificados em formato Y (4 fios na base) em cada fio natural."
+ }
+ ],
+ "espessuras_comuns": [
+ {"espessura": "0.05 / 0.07", "indicacao": "Volume Russo e Fios Tecnológicos"},
+ {"espessura": "0.15", "indicacao": "Efeito natural intermediário"},
+ {"espessura": "0.20", "indicacao": "Fio a Fio Clássico (Efeito rímel)"}
+ ],
+ "curvaturas_principais": [
+ {"curvatura": "C", "efeito": "Natural, acompanha a curvatura padrão do fio natural."},
+ {"curvatura": "D", "efeito": "Mais acentuada/curvada, efeito maquiagem e olhar proeminente."}
+ ]
+ },
+ "mapping_estilos": [
+ {
+ "estilo": "Boneca",
+ "caracteristica": "Maior comprimento aplicado no centro da pálpebra.",
+ "indicacao": "Arredondar e abrir olhos pequenos."
+ },
+ {
+ "estilo": "Gatinho",
+ "caracteristica": "Maior comprimento aplicado no canto externo.",
+ "indicacao": "Proporcionar efeito delineado e amendoado.",
+ "contraindicacao": "Olhos caídos."
+ },
+ {
+ "estilo": "Esquilo",
+ "caracteristica": "Maior comprimento alinhado ao arco da sobrancelha.",
+ "indicacao": "Modelo coringa, indicado para quase todos os formatos de olhos."
+ }
+ ],
+ "procedimento_e_cuidados": {
+ "preparacao": "Higienização completa da região dos olhos eliminando resíduos de oleosidade e maquiagem para evitar falsa colagem.",
+ "cuidados_pos_procedimento": [
+ "Não molhar ou frequentar ambientes úmidos/saunas nas primeiras 24 horas.",
+ "Não utilizar máscara de cílios (rímel).",
+ "Não utilizar produtos à base de óleos ou álcool na região dos olhos.",
+ "Higienizar e pentear os cílios diariamente com shampoo neutro e escovinha.",
+ "Evitar friccionar os olhos ou dormir amassando o rosto no travesseiro."
+ ]
+ }
+ }
+}
