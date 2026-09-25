@@ -1,26 +1,34 @@
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HorarioManager from '@/components/HorarioManager';
+import ServicosManager from '@/components/ServicosManager';
 import AgendamentoCard from '@/components/AgendamentoCard';
 import SafeImage from '@/components/SafeImage';
 import { supabase } from '@/lib/supabase';
-import { Agendamento } from '@/types';
+import { Agendamento, Servico } from '@/types';
 
 export default async function ProfPage() {
   const today = new Date().toISOString().split('T')[0];
 
-  // Busca agendamentos - Vamos ordenar em memória para garantir a precisão absoluta
-  const { data: agendamentosRaw } = await supabase
-    .from('agendamentos')
-    .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
-    .neq('status', 'cancelado');
+  // Busca dados em paralelo
+  const [agendamentosRes, horariosRes, servicosRes] = await Promise.all([
+    supabase
+      .from('agendamentos')
+      .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
+      .neq('status', 'cancelado'),
+    supabase
+      .from('horarios_disponiveis')
+      .select('*')
+      .order('data', { ascending: true })
+      .order('hora_inicio', { ascending: true }),
+    supabase
+      .from('servicos')
+      .select('*')
+      .order('nome', { ascending: true })
+  ]);
 
-  const { data: horarios } = await supabase
-    .from('horarios_disponiveis')
-    .select('*')
-    .order('data', { ascending: true })
-    .order('hora_inicio', { ascending: true });
-
-  const rawList = (agendamentosRaw as Agendamento[]) || [];
+  const rawList = (agendamentosRes.data as Agendamento[]) || [];
+  const horarios = horariosRes.data || [];
+  const servicos = (servicosRes.data as Servico[]) || [];
 
   // Ordenação rigorosa: Data Crescente -> Hora Crescente
   const agendamentos = rawList.sort((a, b) => {
@@ -119,22 +127,34 @@ export default async function ProfPage() {
 
         <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
           {/* Coluna de Agendamentos */}
-          <section className="lg:col-span-2 space-y-6">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
-              Fila de Atendimentos
-            </h2>
+          <section className="lg:col-span-2 space-y-12">
+            <div className="space-y-6">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                Fila de Atendimentos
+              </h2>
 
-            <div className="grid gap-4">
-              {agendamentos.length > 0 ? (
-                agendamentos.map((ag) => (
-                  <AgendamentoCard key={ag.id} agendamento={ag} />
-                ))
-              ) : (
-                <div className="bg-bg-card p-12 rounded-[24px] border border-dashed border-accent-lavender text-center">
-                  <p className="text-text-muted italic">Nenhum agendamento encontrado.</p>
-                </div>
-              )}
+              <div className="grid gap-4">
+                {agendamentos.length > 0 ? (
+                  agendamentos.map((ag) => (
+                    <AgendamentoCard key={ag.id} agendamento={ag} />
+                  ))
+                ) : (
+                  <div className="bg-bg-card p-12 rounded-[24px] border border-dashed border-accent-lavender text-center">
+                    <p className="text-text-muted italic">Nenhum agendamento encontrado.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Gestão de Serviços */}
+            <div className="space-y-6">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
+                🌸 Gestão de Serviços
+              </h2>
+              <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
+                <ServicosManager initialServicos={servicos} />
+              </div>
             </div>
           </section>
 
