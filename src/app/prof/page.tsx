@@ -71,7 +71,17 @@ export default async function ProfPage() {
   const horariosDisponiveisAmanha = horarios.filter(h => h.data === amanhaStr && h.status === 'livre');
 
   // Estrutura de Alertas Dinâmica
-  const alertas = [
+  interface Alerta {
+    id: string;
+    titulo: string;
+    mensagem: string;
+    link: string;
+    textoBotao: string;
+    prioridade: number;
+    icone: string;
+  }
+
+  const alertas: Alerta[] = [
     agendamentosPendentes.length > 0 && {
       id: 'pendentes',
       titulo: 'Confirmações Pendentes',
@@ -99,7 +109,9 @@ export default async function ProfPage() {
       prioridade: 3,
       icone: '🔄'
     }
-  ].filter(Boolean).sort((a: any, b: any) => a.prioridade - b.prioridade);
+  ].filter(Boolean) as Alerta[];
+
+  alertas.sort((a, b) => a.prioridade - b.prioridade);
 
   // Métricas para o Dashboard
   const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today);
