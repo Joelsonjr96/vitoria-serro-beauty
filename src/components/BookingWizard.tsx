@@ -108,15 +108,21 @@ export default function BookingWizard({
 
       if (response.ok) {
         const result = await response.json();
+        console.log('Result from API:', JSON.stringify(result));
+
         // Redireciona usando o ID do agendamento se disponível, senão usa o ID do horário como fallback
         const redirectId = result.data?.id || selectedHorario.id;
+        console.log('Attempting to redirect to:', `/agendado/${redirectId}`);
+
         router.push(`/agendado/${redirectId}`);
+        router.refresh(); // Tenta forçar refresh se necessário
       } else {
         const errorData = await response.json();
-        console.error('Erro no agendamento:', errorData);
+        console.error('Erro na API (BookingWizard.tsx):', JSON.stringify(errorData));
         alert(`Erro ao realizar o agendamento: ${errorData.error || 'Tente novamente.'}`);
       }
-    } catch {
+    } catch (err) {
+      console.error('Erro de conexão ou parse (BookingWizard.tsx):', err);
       alert('Erro de conexão. Verifique sua internet.');
     } finally {
       setLoading(false);
@@ -274,6 +280,17 @@ export default function BookingWizard({
                     </div>
                   </div>
                 </div>
+
+                <label className="flex items-start gap-3 cursor-pointer mt-6">
+                  <input
+                    type="checkbox"
+                    required
+                    className="mt-1 accent-button-bg"
+                  />
+                  <p className="text-[10px] text-text-muted leading-relaxed">
+                    Autorizo o tratamento dos meus dados pessoais (nome, telefone e ficha de anamnese) para fins de agendamento e histórico de atendimento, conforme nossa política de privacidade.
+                  </p>
+                </label>
 
                 <button
                   type="submit"

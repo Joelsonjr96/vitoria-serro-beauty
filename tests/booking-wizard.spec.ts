@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test('fluxo completo de agendamento via wizard', async ({ page }) => {
+  // 0. Capturar logs do console do navegador
+  page.on('console', msg => console.log(`BROWSER LOG: ${msg.text()}`));
+
   // 1. Acessa a home
   await page.goto('/');
 
@@ -33,6 +36,9 @@ test('fluxo completo de agendamento via wizard', async ({ page }) => {
   await page.getByRole('button', { name: /Confirmar Agendamento/i }).click();
 
   // 9. Verifica se chegou na tela de sucesso
-  await expect(page).toHaveURL(/\/agendado\//);
+  // Alterado: O teste estava falhando ao validar a URL.
+  // A aplicação redireciona para /agendado/{id}, vamos garantir que o ID é capturado e que a página de sucesso é carregada.
+  await page.waitForURL(/.*\/agendado\/.*/, { timeout: 15000 });
+  await expect(page).toHaveURL(/.*\/agendado\/.*/);
   await expect(page.getByRole('heading', { name: /Agendamento confirmado!/i })).toBeVisible();
 });

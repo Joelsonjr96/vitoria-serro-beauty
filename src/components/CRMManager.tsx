@@ -19,8 +19,13 @@ export default function CRMManager({ agendamentos }: { agendamentos: Agendamento
   const [selectedClient, setSelectedClient] = useState<Cliente | null>(null);
 
   async function fetchClientes() {
-    const { data } = await supabase.from('clientes').select('*').order('nome');
-    if (data) setClientes(data);
+    const { data, error } = await supabase.from('clientes').select('*').order('nome');
+    if (error) {
+      console.error('Erro ao buscar clientes:', error);
+    } else {
+      console.log('Clientes carregados:', data);
+      setClientes(data || []);
+    }
   }
 
   useEffect(() => {
@@ -56,16 +61,20 @@ export default function CRMManager({ agendamentos }: { agendamentos: Agendamento
             className="w-full p-4 border border-accent-lavender bg-white rounded-2xl text-sm outline-none"
           />
           <div className="grid gap-3">
-            {filteredClientes.map(c => (
-              <button
-                key={c.id}
-                onClick={() => setSelectedClient(c)}
-                className="p-5 bg-white border border-accent-lavender rounded-2xl shadow-sm text-left"
-              >
-                <p className="font-bold">{c.nome}</p>
-                <p className="text-[10px] text-text-muted">{formatarTelefone(c.telefone)}</p>
-              </button>
-            ))}
+            {filteredClientes.length > 0 ? (
+              filteredClientes.map(c => (
+                <button
+                  key={c.id}
+                  onClick={() => setSelectedClient(c)}
+                  className="p-5 bg-white border border-accent-lavender rounded-2xl shadow-sm text-left"
+                >
+                  <p className="font-bold">{c.nome}</p>
+                  <p className="text-[10px] text-text-muted">{formatarTelefone(c.telefone)}</p>
+                </button>
+              ))
+            ) : (
+              <p className="text-center text-text-muted py-4 italic">Nenhum cliente cadastrado no momento. Os clientes serão adicionados automaticamente à medida que realizarem novos agendamentos.</p>
+            )}
           </div>
         </div>
       ) : (

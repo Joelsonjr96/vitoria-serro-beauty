@@ -1,4 +1,4 @@
-# CONTEXTO DO PROJETO — Sistema de Agendamento Vitória Serro Beauty
+# CONTEXTO DO PROJETO — CRM de agendamento personalizado Vitória Serro Beauty
 
 ## O que é isto
 Piloto de execução preliminar do Projeto de Extensão V (curso de ADS,

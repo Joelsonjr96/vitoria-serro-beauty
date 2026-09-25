@@ -7,15 +7,15 @@ import SafeImage from '@/components/SafeImage';
 const servicosInfo: Record<string, { desc: string, img: string }> = {
   "Extensão de Cílios Volume Brasileiro": {
     desc: "Fios tecnológicos em formato Y. Proporcionam um preenchimento marcante, com leveza e retenção prolongada.",
-    img: "/images/volume brasileiro.png"
+    img: "/images/servicos/volume-brasileiro.png"
   },
   "Volume Egípcio": {
     desc: "Técnica com fios em formato W, proporcionando volume com aspecto natural e fios ultra leves.",
-    img: "/images/volume egípcio.png"
+    img: "/images/servicos/volume-egipcio.png"
   },
   "Volume Lasting": {
     desc: "Técnica exclusiva focada em máxima retenção e durabilidade, ideal para quem tem rotina agitada.",
-    img: "/images/volume lasting.png"
+    img: "/images/servicos/volume-lasting.png"
   },
   "Lash Lifting": {
     desc: "Curvatura e hidratação dos seus cílios naturais, proporcionando um olhar aberto e radiante por semanas.",
@@ -48,7 +48,7 @@ export default async function Home() {
         {/* Fundo: Foto em close-up dos cílios (trabalho da Vitória) */}
         <div className="absolute inset-0 z-0">
            <SafeImage
-             src="/images/vitoria serro.jpg"
+             src="/images/branding/vitoria-serro.jpg"
              alt="Close-up Lash Design"
              className="w-full h-full object-cover"
              objectPosition="center"
@@ -68,7 +68,7 @@ export default async function Home() {
           {/* Aplicação da Logo: Logo Ouro centralizada */}
           <div className="mb-10 flex justify-center drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
             <SafeImage
-              src="/images/LOGO DOURADA.png"
+              src="/images/branding/logo-dourada.png"
               alt="Vitória Serro Beauty Ouro"
               className="h-40 md:h-56 w-auto object-contain"
               width={400}
@@ -94,7 +94,7 @@ export default async function Home() {
         <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
            <div className="h-80 rounded-[8px] overflow-hidden border border-accent-lavender bg-bg-lavender-soft/30 relative">
               <SafeImage
-                src="/images/vitoria serro.jpg"
+                src="/images/branding/vitoria-serro.jpg"
                 alt="Vitória Serro trabalhando"
                 className="w-full h-full object-cover"
                 objectPosition="top"
@@ -123,7 +123,7 @@ export default async function Home() {
                   <div className="absolute top-4 left-4 flex flex-col items-start gap-2">
                     <div className="bg-white/90 backdrop-blur-sm p-1.5 rounded-lg shadow-sm border border-accent-lavender/30 w-fit">
                       <SafeImage
-                        src="/images/LOGO PRETA.png"
+                        src="/images/branding/logo-preta.png"
                         alt="VS Monograma"
                         className="h-6 w-auto object-contain"
                         width={100}

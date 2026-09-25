@@ -7,7 +7,7 @@ export default function Header() {
       <nav className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-center">
         <Link href="/" className="transition-opacity hover:opacity-80">
           <SafeImage
-            src="/images/LOGO PRETA.png"
+            src="/images/branding/logo-preta.png"
             alt="Vitória Serro Beauty Logo"
             className="h-14 w-auto object-contain"
             width={200}

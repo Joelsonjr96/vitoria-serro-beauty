@@ -1,6 +1,6 @@
-# Sistema de Agendamento - Vitória Serro Beauty
+# CRM de agendamento personalizado - Vitória Serro Beauty
 
-Este é o sistema de agendamento desenvolvido para o estúdio Vitória Serro Beauty.
+Este é o CRM de agendamento personalizado desenvolvido para o estúdio Vitória Serro Beauty.
 
 ## Tecnologias
 - Framework: Next.js (App Router)

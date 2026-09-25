@@ -1,7 +1,5 @@
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HorarioManager from '@/components/HorarioManager';
-import ServicosManager from '@/components/ServicosManager';
-import ConfiguracoesManager from '@/components/ConfiguracoesManager';
 import CRMManager from '@/components/CRMManager';
 import NovoAgendamento from '@/components/NovoAgendamento';
 import AgendamentoCard from '@/components/AgendamentoCard';
@@ -14,7 +12,7 @@ export default async function ProfPage() {
   const today = new Date().toISOString().split('T')[0];
 
   // Busca dados em paralelo
-  const [agendamentosRes, horariosRes, servicosRes, configRes] = await Promise.all([
+  const [agendamentosRes, horariosRes, servicosRes] = await Promise.all([
     supabase
       .from('agendamentos')
       .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
@@ -28,15 +26,11 @@ export default async function ProfPage() {
       .from('servicos')
       .select('*')
       .order('nome', { ascending: true }),
-    supabase
-      .from('configuracoes')
-      .select('*')
   ]);
 
   const rawList = (agendamentosRes.data as Agendamento[]) || [];
   const horarios = horariosRes.data || [];
   const servicos = (servicosRes.data as Servico[]) || [];
-  const configuracoes = configRes.data || [];
 
   // Ordenação rigorosa: Data Crescente -> Hora Crescente
   const agendamentos = rawList.sort((a, b) => {
@@ -87,7 +81,7 @@ export default async function ProfPage() {
           <div className="flex items-center gap-6">
             <div className="bg-white p-2 rounded-xl shadow-sm border border-accent-lavender/30">
                <SafeImage
-                 src="/images/LOGO PRETA.png"
+                 src="/images/branding/logo-preta.png"
                  alt="Logo"
                  width={100}
                  height={60}
@@ -169,26 +163,6 @@ export default async function ProfPage() {
                 <CRMManager agendamentos={agendamentos} />
               </div>
             </div>
-
-            {/* Gestão de Serviços */}
-            <div className="space-y-6">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
-                🌸 Gestão de Serviços
-              </h2>
-              <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
-                <ServicosManager initialServicos={servicos} />
-              </div>
-            </div>
-
-            {/* Configurações */}
-            <div className="space-y-6">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
-                ⚙️ Configurações
-              </h2>
-              <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
-                <ConfiguracoesManager initialConfig={configuracoes} />
-              </div>
-            </div>
           </section>
 
           {/* Coluna de Gestão de Horários Reformulada */}
@@ -197,7 +171,7 @@ export default async function ProfPage() {
               🗓️ Bloqueio de Agenda
             </h2>
             <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm sticky top-24">
-              <HorarioManager initialHorarios={horarios || []} />
+              <HorarioManager initialHorarios={horarios.filter(h => h.data > today || (h.data === today && h.hora_inicio >= agora)) || []} />
             </div>
           </section>
         </div>

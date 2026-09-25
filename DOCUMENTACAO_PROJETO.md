@@ -1,6 +1,6 @@
-# Documentação do Projeto - Vitória Serro Beauty
+# Documentação do Projeto - CRM de agendamento personalizado Vitória Serro Beauty
 
-Este documento resume todas as implementações, correções e a estrutura final do sistema de agendamento desenvolvido para o estúdio Vitória Serro Beauty.
+Este documento resume todas as implementações, correções e a estrutura final do CRM de agendamento personalizado desenvolvido para o estúdio Vitória Serro Beauty.
 
 ## 1. Identidade Visual e Branding
 A aplicação foi totalmente personalizada seguindo as diretrizes de luxo e sofisticação da marca:

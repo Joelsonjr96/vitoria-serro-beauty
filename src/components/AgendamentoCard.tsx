@@ -16,48 +16,17 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
     setLoading(true);
 
     try {
-      // 1. Busca os detalhes do serviço e horário para saber quantos slots liberar
-      const { data: agData } = await supabase
-        .from('agendamentos')
-        .select('*, servicos(duracao_minutos), horarios_disponiveis(data, hora_inicio)')
-        .eq('id', agendamento.id)
-        .single();
-
-      const { error } = await supabase
-        .from('agendamentos')
-        .update({ status: newStatus })
-        .eq('id', agendamento.id);
+      // Chama a função RPC atômica
+      const { data, error } = await supabase.rpc('cancel_appointment', {
+        p_agendamento_id: agendamento.id
+      });
 
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
-      // Se cancelar, libera TODOS os horários que o serviço ocupava
-      if (newStatus === 'cancelado' && agData?.horarios_disponiveis) {
-        const slotsToFree = Math.ceil((agData.servicos?.duracao_minutos || 30) / 30);
-
-        const { data: slots } = await supabase
-          .from('horarios_disponiveis')
-          .select('id')
-          .eq('data', agData.horarios_disponiveis.data)
-          .gte('hora_inicio', agData.horarios_disponiveis.hora_inicio)
-          .order('hora_inicio', { ascending: true })
-          .limit(slotsToFree);
-
-        if (slots && slots.length > 0) {
-          const idsToFree = slots.map(s => s.id);
-          const { error: horarioError } = await supabase
-            .from('horarios_disponiveis')
-            .update({ status: 'livre' })
-            .in('id', idsToFree);
-
-          if (horarioError) throw horarioError;
-        }
-
-        // Recarrega a página para remover o card cancelado
-        window.location.reload();
-        return;
-      }
-
-      setStatus(newStatus);
+      // Recarrega a página para remover o card cancelado
+      window.location.reload();
+      return;
     } catch (err: unknown) {
       console.error('Erro completo:', err);
       let msg = 'Erro desconhecido';

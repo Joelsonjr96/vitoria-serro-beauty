@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="max-w-4xl mx-auto px-6 grid md:grid-cols-3 gap-12 text-center md:text-left">
         <div className="flex flex-col items-center md:items-start gap-8">
           <SafeImage
-            src="/images/logo-fundo-preto.png"
+            src="/images/branding/logo-fundo-preto.png"
             alt="Vitória Serro Beauty Logo Branca"
             className="h-16 w-auto object-contain"
             width={300}
