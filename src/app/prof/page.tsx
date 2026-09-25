@@ -8,7 +8,7 @@ import LogoutButton from '@/components/LogoutButton';
 import { supabase } from '@/lib/supabase';
 import { Agendamento, Servico } from '@/types/allTypes';
 
-export const revalidate = 0; // Força a página a buscar dados frescos sempre
+export const revalidate = 0;
 
 export default async function ProfPage() {
   const today = new Date().toISOString().split('T')[0];
@@ -46,26 +46,36 @@ export default async function ProfPage() {
   }) as Agendamento[];
 
   // Métricas para o Dashboard
-  const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today && ag.status !== 'cancelado');
+  const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today);
   const faturamentoHoje = agendamentosHoje.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  // Métrica da Semana (próximos 7 dias a partir de hoje)
+  // Métrica da Semana
   const umaSemanaDepois = new Date();
   umaSemanaDepois.setDate(umaSemanaDepois.getDate() + 7);
   const umaSemanaDepoisStr = umaSemanaDepois.toISOString().split('T')[0];
 
   const agendamentosSemana = agendamentos.filter(ag => {
     const dataAg = ag.horarios_disponiveis?.data || '';
-    return dataAg >= today && dataAg <= umaSemanaDepoisStr && ag.status !== 'cancelado';
+    return dataAg >= today && dataAg <= umaSemanaDepoisStr;
   });
   const faturamentoSemana = agendamentosSemana.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  // Total Pendente (tudo o que está confirmado e não concluído/cancelado de hoje em diante)
-  const agendamentosPendentes = agendamentos.filter(ag => {
+  // Métrica do Mês
+  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+  const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0];
+
+  const agendamentosMes = agendamentos.filter(ag => {
     const dataAg = ag.horarios_disponiveis?.data || '';
-    return dataAg >= today && ag.status === 'confirmado';
+    return dataAg >= startOfMonth && dataAg <= endOfMonth;
   });
-  const faturamentoPendente = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+  const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+
+  // Status Separados
+  const agendamentosConfirmados = agendamentos.filter(ag => ag.status === 'confirmado' && ag.horarios_disponiveis?.data >= today);
+  const faturamentoConfirmados = agendamentosConfirmados.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+
+  const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
+  const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
   // Encontrar próxima cliente hoje (que não foi cancelada)
   const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -98,23 +108,35 @@ export default async function ProfPage() {
           </div>
 
           {/* DASHBOARD RÁPIDO */}
-          <div className="flex flex-wrap gap-3" suppressHydrationWarning>
-            <div className="bg-bg-card border border-accent-lavender px-5 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[10px] uppercase tracking-widest text-text-muted font-bold mb-1">Hoje</p>
-              <p className="text-xl font-serif text-text-main">{agendamentosHoje.length} <span className="text-xs font-sans text-text-muted">atend.</span></p>
-              <p className="text-xs font-medium text-emerald-700">R$ {faturamentoHoje.toFixed(2)}</p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3" suppressHydrationWarning>
+            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Hoje</p>
+              <p className="text-lg font-serif text-text-main">{agendamentosHoje.length}</p>
+              <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoHoje.toFixed(2)}</p>
             </div>
 
-            <div className="bg-bg-card border border-accent-lavender px-5 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[10px] uppercase tracking-widest text-text-muted font-bold mb-1">Na Semana</p>
-              <p className="text-xl font-serif text-text-main">{agendamentosSemana.length} <span className="text-xs font-sans text-text-muted">atend.</span></p>
-              <p className="text-xs font-medium text-emerald-700">R$ {faturamentoSemana.toFixed(2)}</p>
+            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Esta Semana</p>
+              <p className="text-lg font-serif text-text-main">{agendamentosSemana.length}</p>
+              <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoSemana.toFixed(2)}</p>
             </div>
 
-            <div className="bg-bg-card border border-accent-lavender px-5 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[10px] uppercase tracking-widest text-text-muted font-bold mb-1">Total Pendente</p>
-              <p className="text-xl font-serif text-text-main">{agendamentosPendentes.length} <span className="text-xs font-sans text-text-muted">atend.</span></p>
-              <p className="text-xs font-medium text-button-bg">R$ {faturamentoPendente.toFixed(2)}</p>
+            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Este Mês</p>
+              <p className="text-lg font-serif text-text-main">{agendamentosMes.length}</p>
+              <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoMes.toFixed(2)}</p>
+            </div>
+
+            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Confirmados</p>
+              <p className="text-lg font-serif text-text-main">{agendamentosConfirmados.length}</p>
+              <p className="text-[10px] font-medium text-button-bg">R$ {faturamentoConfirmados.toFixed(2)}</p>
+            </div>
+
+            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Aguardando Conf.</p>
+              <p className="text-lg font-serif text-text-main">{agendamentosPendentes.length}</p>
+              <p className="text-[10px] font-medium text-amber-600">R$ {faturamentoPendentes.toFixed(2)}</p>
             </div>
           </div>
         </header>
