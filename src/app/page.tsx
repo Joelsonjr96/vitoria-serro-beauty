@@ -51,6 +51,7 @@ export default async function Home() {
              src="/images/vitoria serro.jpg"
              alt="Close-up Lash Design"
              className="w-full h-full object-cover"
+             objectPosition="top"
              priority={true}
            />
         </div>
