@@ -157,6 +157,16 @@ export default async function ProfPage() {
         <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
           {/* Coluna de Agendamentos */}
           <section className="lg:col-span-2 space-y-12">
+            {/* Nova Seção: CRM */}
+            <div className="space-y-6">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
+                👥 Cadastro e Histórico de Clientes
+              </h2>
+              <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
+                <CRMManager agendamentos={agendamentos} />
+              </div>
+            </div>
+
             <div className="space-y-6">
               <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
@@ -175,16 +185,6 @@ export default async function ProfPage() {
                     <p className="text-text-muted italic">Nenhum agendamento encontrado.</p>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* Nova Seção: CRM */}
-            <div className="space-y-6">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
-                👥 Cadastro e Histórico de Clientes
-              </h2>
-              <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
-                <CRMManager agendamentos={agendamentos} />
               </div>
             </div>
           </section>
