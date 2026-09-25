@@ -1,0 +1,17 @@
+{
+  "name": "Vitória Serro Beauty",
+  "short_name": "VS Beauty",
+  "description": "Agendamento de Lash Design e Beleza",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F5",
+  "theme_color": "#2A163B",
+  "icons": [
+    {
+      "src": "/images/LOGO PRETA.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

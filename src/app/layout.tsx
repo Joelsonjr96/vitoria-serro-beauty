@@ -17,6 +17,16 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Vitória Serro Beauty | Agendamento",
   description: "Sistema de agendamento do estúdio de lash designer Vitória Serro Beauty.",
+  manifest: "/manifest.json",
+  themeColor: "#2A163B",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "VS Beauty",
+  },
+  icons: {
+    apple: "/images/LOGO PRETA.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
