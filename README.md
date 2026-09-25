@@ -7,8 +7,10 @@ Otimizar a gestão de horários do estúdio, proporcionando uma experiência sup
 
 ## ✨ Funcionalidades Principais
 - **Fluxo de Agendamento Inteligente:** Wizard em 3 etapas para cliente (Escolha do Serviço -> Seleção de Data e Horário -> Cadastro de Dados e Anamnese).
-- **Painel Profissional:** Área restrita para a profissional gerenciar sua agenda, visualizar próximos atendimentos, bloquear horários e acompanhar métricas de faturamento.
-- **Mobile First:** Interface totalmente otimizada para acesso via smartphone.
+- **Painel Profissional Aprimorado:** Dashboard acionável com área de "Atenção" (alertas sobre confirmações, clientes inativos e horários), métricas de faturamento e fluxo de gestão de atendimentos.
+- **Máquina de Estados de Atendimento:** Ciclo completo de status (`Pendente` → `Confirmado` → `Em Atendimento` → `Concluído`) com suporte a fluxos de `Cancelamento` e `Não Compareceu`.
+- **Fluxo de Conclusão de Atendimento:** Registro estruturado de atendimentos com observações, atualização automática de histórico e métricas.
+- **Responsividade Total:** Interface adaptada para uso fluido em dispositivos móveis e desktops, com áreas de toque otimizadas para smartphones.
 - **PWA (Progressive Web App):** Instalável como aplicativo nativo no celular.
 
 ## 🛠️ Tecnologias
