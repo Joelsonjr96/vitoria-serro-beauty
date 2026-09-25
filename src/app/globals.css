@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Paleta de Cores */
+  --bg-primary: #FAF7F5; /* Off-white quente para o fundo da página */
+  --bg-card: #FFFFFF; /* Branco puro para destacar os cards */
+  --text-main: #2C2825; /* Marrom/Cinza bem escuro no lugar do preto puro */
+  --text-muted: #4A4540; /* Tom mais escuro para melhor legibilidade */
+  --accent-soft: #E8D8CE; /* Tom nude/rose para bordas e destaques */
+
+  /* Lilás Marca (Principal): Ícones, destaques leves, bordas */
+  --brand-purple: #C49DF6;
+  --accent-lavender: var(--brand-purple);
+  --bg-lavender-soft: #F0E8F2; /* Fundo Lavanda Suave */
+
+  /* Lilás Fechado / Overlay Escuro (Alto Luxo) */
+  --brand-purple-dark: #2A163B;
+  --button-bg: #8B728E; /* Lilás Avezado para botões */
+  --button-hover: #6B516F;
+
+  --background: var(--bg-primary);
+  --foreground: var(--text-main);
+}
+
+/* Animações Customizadas */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoom-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-plus-jakarta);
+
+  /* Cores Customizadas */
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-card: var(--bg-card);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-lavender: var(--accent-lavender);
+  --color-bg-lavender-soft: var(--bg-lavender-soft);
+  --color-button-bg: var(--button-bg);
+  --color-button-hover: var(--button-hover);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-purple-dark: var(--brand-purple-dark);
+
+  /* Utilitários Extras */
+  --animate-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.4s ease-out;
+  --animate-zoom-in: zoom-in 0.2s ease-out;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Micro-interações Globais */
+button, .clickable {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover-effect:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 4px 12px rgba(139, 114, 142, 0.2);
+}
+
+.card-hover-effect {
+  transition: all 0.3s ease;
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Esconder Scrollbar mas manter funcionalidade */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
 }

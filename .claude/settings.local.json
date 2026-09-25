@@ -1,16 +1,73 @@
 {
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup|resume",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/joels/AppData/Local/Programs/Python/Python314/Scripts/headroom.EXE wrap selfheal --marker headroom-wrap-selfheal",
-            "timeout": 10
-          }
-        ]
-      }
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://localhost:20128",
+    "ANTHROPIC_AUTH_TOKEN": "sk-b777ee4661e7c7b5-187d8b-bc0a75eb",
+    "ANTHROPIC_MODEL": "combo/planos-gratuitos",
+    "ENABLE_TOOL_SEARCH": "true"
+  },
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item *)",
+      "PowerShell(npx prisma migrate dev --name init)",
+      "PowerShell(npx prisma --help)",
+      "PowerShell(npm *)",
+      "PowerShell(npx prisma db push)",
+      "PowerShell(npx prisma --version)",
+      "PowerShell(npx prisma generate)",
+      "PowerShell(npx skills add https://github.com/nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max)",
+      "Bash(npx skills *)",
+      "mcp__headroom__headroom_stats",
+      "Skill(update-config)",
+      "Bash(export ANTHROPIC_BASE_URL=\"http://localhost:9999\")",
+      "Bash(echo http://localhost:9999)",
+      "Bash(curl *)",
+      "Bash(printenv ANTHROPIC_BASE_URL *)",
+      "Bash(npm install -g agent-browser)",
+      "Bash(npm install *)",
+      "Bash(python *)",
+      "Bash(npm run *)",
+      "Bash(agent-browser open *)",
+      "Bash(agent-browser action *)",
+      "Bash(agent-browser *)",
+      "Bash(npx next *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3000)",
+      "Bash(taskkill /PID 5836 /F)",
+      "Bash(taskkill /F /PID 5836)",
+      "Bash(taskkill *)",
+      "Bash(taskkill.exe *)",
+      "Bash(npx ts-node *)",
+      "Bash(npx prisma *)",
+      "Bash(npx create-next-app *)",
+      "Skill(agent-browser)",
+      "Bash(node *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git config *)",
+      "Bash(git rm *)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(/usr/bin/taskkill.exe *)",
+      "Bash(env)",
+      "Bash(npx playwright *)",
+      "Bash(npm init *)",
+      "Bash(rm \"Cópia de APOSTILA INICIANTE   CAPPING 2023_20251028_231813_0000.pdf\")",
+      "Bash(rm -rf playwright-report/ test-results/)",
+      "Bash(rm PLAN_FATIA_3.md PLAN_FATIA_4.md)",
+      "Bash(npx eslint *)",
+      "Bash(npx tsc *)",
+      "Bash(npm test *)",
+      "Bash(timeout 5 bash -c 'cat C:\\\\Users\\\\joels\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-joels-Desktop-APPS-VITORIA\\\\7538a53d-6fd2-41fa-8e68-a2e79853e16f\\\\tasks\\\\b8pztl5l4.output 2>/dev/null || echo \"File not found yet\"')",
+      "Bash(timeout 3 bash -c 'cat C:\\\\Users\\\\joels\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-joels-Desktop-APPS-VITORIA\\\\7538a53d-6fd2-41fa-8e68-a2e79853e16f\\\\tasks\\\\bkdwkf7hb.output 2>/dev/null || echo \"File not found yet\"')",
+      "Bash(timeout 20s npm --prefix /c/Users/joels/Desktop/APPS/VITORIA run dev)",
+      "WebFetch(domain:localhost)",
+      "Bash(git worktree *)",
+      "Bash(npx supabase *)",
+      "Bash(supabase *)",
+      "Bash(npx ctx7 *)",
+      "Bash(gh auth *)"
     ]
   }
 }
