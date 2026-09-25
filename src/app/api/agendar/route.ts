@@ -47,7 +47,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Um ou mais horários deste intervalo acabaram de ser ocupados' }, { status: 409 });
     }
 
-    // 2. Insere o agendamento
+    // 2. Upsert do Cliente (vincula pelo telefone)
+    const { data: cliente, error: clientError } = await supabase
+      .from('clientes')
+      .upsert(
+        {
+          nome: body.nome_cliente,
+          telefone: body.telefone_cliente
+        },
+        { onConflict: 'telefone' }
+      )
+      .select('id')
+      .single();
+
+    if (clientError) {
+      console.error('Erro ao salvar cliente:', clientError);
+    }
+
+    // 2. Insere o agendamento (agora vinculando cliente_id se possível)
     const { data: agendamento, error } = await supabase
       .from('agendamentos')
       .insert([
