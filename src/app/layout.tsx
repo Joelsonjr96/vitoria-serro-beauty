@@ -22,6 +22,11 @@ export const metadata: Metadata = {
   title: "Vitória Serro Beauty | Agendamento",
   description: "Sistema de agendamento do estúdio de lash designer Vitória Serro Beauty.",
   manifest: "/manifest.json",
+  openGraph: {
+    title: "Vitória Serro Beauty | Agendamento",
+    description: "Sistema de agendamento do estúdio de lash designer Vitória Serro Beauty.",
+    images: [{ url: "/images/branding/logo-fundo-roxo.png", width: 1200, height: 630 }],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
