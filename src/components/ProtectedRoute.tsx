@@ -1,30 +1,40 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
-    const auth = localStorage.getItem('vitoria_auth');
-    setIsAuthenticated(auth === 'true');
+    // Verifica se já existe uma sessão ativa
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === process.env.NEXT_PUBLIC_PROFESSIONAL_PASSWORD) {
-      localStorage.setItem('vitoria_auth', 'true');
-      setIsAuthenticated(true);
+    setLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert('Erro ao autenticar: ' + error.message);
     } else {
-      alert('Senha incorreta.');
+      setIsAuthenticated(true);
     }
+    setLoading(false);
   };
 
-  // Evita Hydration Mismatch: garante que o servidor e o cliente rendam o mesmo estado inicial (null)
   if (!isMounted || isAuthenticated === null) {
     return <div className="min-h-screen bg-bg-primary" />;
   }
@@ -40,30 +50,38 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-text-muted/60 ml-1">Senha de Acesso</label>
+              <label className="text-xs font-bold uppercase tracking-widest text-text-muted/60 ml-1">E-mail</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-4 border border-accent-lavender bg-bg-primary/30 rounded-[12px] focus:border-button-bg outline-none transition-all placeholder:text-text-muted/30"
+                placeholder="vitoria@studio.com"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-widest text-text-muted/60 ml-1">Senha</label>
               <input
                 type="password"
-                name="password"
-                data-testid="password-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                data-testid="password-input"
                 className="w-full p-4 border border-accent-lavender bg-bg-primary/30 rounded-[12px] focus:border-button-bg outline-none transition-all placeholder:text-text-muted/30 font-mono"
                 placeholder="••••••••"
+                required
               />
             </div>
 
             <button
               type="submit"
               data-testid="login-button"
+              disabled={loading}
               className="w-full bg-button-bg text-white py-4 rounded-[12px] font-bold text-lg hover:bg-button-hover transition-all active:scale-[0.98] shadow-lg shadow-button-bg/10 mt-2 btn-hover-effect"
             >
-              Entrar no Painel
+              {loading ? 'Entrando...' : 'Entrar no Painel'}
             </button>
           </div>
-
-          <p className="text-[10px] text-center text-text-muted/40 uppercase tracking-widest mt-8">
-            Vitória Serro Beauty © {new Date().getFullYear()}
-          </p>
         </form>
       </div>
     );
