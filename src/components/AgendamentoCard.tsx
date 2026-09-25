@@ -66,6 +66,7 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
     }
   };
 
+  // Force rebuild comment
   const whatsappMsg = `Olá ${agendamento.nome_cliente.split(' ')[0]}, aqui é a Vitória. Tudo bem? Confirmamos seu horário de ${agendamento.servicos?.nome} para ${formatarDataBrasileira(agendamento.horarios_disponiveis?.data || '').split(',')[0]} às ${agendamento.horarios_disponiveis?.hora_inicio.slice(0, 5)}?`;
 
   return (
