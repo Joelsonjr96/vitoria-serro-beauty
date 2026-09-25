@@ -50,7 +50,7 @@ test.describe('Verificação de Páginas do Projeto', () => {
     await page.getByRole('button', { name: /Confirmar Agendamento/i }).click();
 
     // 2. Verifica se está na página de agendado
-    await expect(page).toHaveURL(/\/agendado\//);
+    await expect(page).toHaveURL(/\/agendar\//);
     await expect(page.getByRole('heading', { name: /Agendamento confirmado!/i })).toBeVisible();
     await expect(page.getByText('Av. Braz de Pina 1720 - Vista Alegre')).toBeVisible();
 

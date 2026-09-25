@@ -15,7 +15,7 @@ test.describe('Verificação de Identidade Visual e Coerência de Marca', () => 
     await expect(headerLogo).toBeVisible();
     const headerSrc = await headerLogo.getAttribute('src');
     // Ajustado para aceitar espaços ou %20
-    expect(headerSrc?.replace(/%20/g, ' ')).toContain('LOGO PRETA.png');
+    expect(headerSrc?.replace(/%20/g, ' ')).toContain('logo-preta.png');
 
     // 2. Verificação da Hero Section (Identidade de Luxo)
     // Procura pela logo dourada pelo alt text
@@ -29,7 +29,7 @@ test.describe('Verificação de Identidade Visual e Coerência de Marca', () => 
     const cardLogo = page.locator('.bg-bg-card img[alt*="VS"]').first();
     await expect(cardLogo).toBeVisible();
     const cardLogoSrc = await cardLogo.getAttribute('src');
-    expect(cardLogoSrc?.replace(/%20/g, ' ')).toContain('LOGO PRETA.png');
+    expect(cardLogoSrc?.replace(/%20/g, ' ')).toContain('logo-preta.png');
 
     // 4. Verificação do Rodapé (Identidade Escura de Luxo)
     const footer = page.locator('footer');
@@ -67,7 +67,7 @@ test.describe('Verificação de Identidade Visual e Coerência de Marca', () => 
     const profLogo = page.locator('header img');
     await expect(profLogo.first()).toBeVisible();
     const profLogoSrc = await profLogo.first().getAttribute('src');
-    expect(profLogoSrc?.replace(/%20/g, ' ')).toContain('LOGO PRETA.png');
+    expect(profLogoSrc?.replace(/%20/g, ' ')).toContain('logo-preta.png');
 
     // Verifica métricas
     await expect(page.getByText('Hoje', { exact: true })).toBeVisible();

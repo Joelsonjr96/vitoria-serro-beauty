@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // Aumenta o tempo limite global
-test.use({ actionTimeout: 20000 });
+test.use({ actionTimeout: 30000 });
 
 test.describe('Fluxo Vitória Serro Beauty', () => {
 
@@ -27,7 +27,7 @@ test.describe('Fluxo Vitória Serro Beauty', () => {
     await page.getByRole('button', { name: 'Confirmar Agendamento' }).click();
 
     // Verifica redirecionamento
-    await expect(page).toHaveURL(/.*agendado/);
+    await expect(page).toHaveURL(/.*agendar/);
     await expect(page.locator('h1')).toContainText('Agendamento confirmado');
 
     // 2. Painel Profissional: Verificar

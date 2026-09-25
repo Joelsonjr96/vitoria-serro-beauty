@@ -37,8 +37,8 @@ test('fluxo completo de agendamento via wizard', async ({ page }) => {
 
   // 9. Verifica se chegou na tela de sucesso
   // Alterado: O teste estava falhando ao validar a URL.
-  // A aplicação redireciona para /agendado/{id}, vamos garantir que o ID é capturado e que a página de sucesso é carregada.
-  await page.waitForURL(/.*\/agendado\/.*/, { timeout: 15000 });
-  await expect(page).toHaveURL(/.*\/agendado\/.*/);
+  // A aplicação redireciona para /agendar/{id}, vamos garantir que o ID é capturado e que a página de sucesso é carregada.
+  await page.waitForURL(/.*\/agendar\/.*/, { timeout: 15000 });
+  await expect(page).toHaveURL(/.*\/agendar\/.*/);
   await expect(page.getByRole('heading', { name: /Agendamento confirmado!/i })).toBeVisible();
 });

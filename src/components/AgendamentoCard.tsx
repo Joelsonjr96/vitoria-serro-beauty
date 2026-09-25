@@ -17,20 +17,24 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
     setLoading(true);
 
     try {
-      const { error } = await supabase
+      console.log('Tentando atualizar status para:', newStatus);
+      const { data, error } = await supabase
         .from('agendamentos')
         .update({ status: newStatus })
         .eq('id', agendamento.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro detalhado do Supabase:', error);
+        throw error;
+      }
 
       setStatus(newStatus);
       // Recarrega a página para atualizar métricas
       window.location.reload();
       return;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Erro ao atualizar status:', err);
-      alert('Erro ao atualizar status.');
+      alert('Erro ao atualizar status: ' + (err.message || JSON.stringify(err)));
     } finally {
       setLoading(false);
     }
