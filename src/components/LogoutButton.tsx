@@ -7,9 +7,9 @@ export default function LogoutButton() {
         localStorage.removeItem('vitoria_auth');
         window.location.href = '/prof';
       }}
-      className="text-[10px] uppercase tracking-widest text-text-muted hover:text-red-500 font-bold ml-4"
+      className="text-[10px] uppercase tracking-widest text-text-muted hover:text-button-bg font-bold ml-4 border-l border-accent-lavender pl-4"
     >
-      Sair
+      Encerrar Sessão
     </button>
   );
 }
