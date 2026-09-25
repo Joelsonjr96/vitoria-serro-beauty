@@ -6,7 +6,7 @@ import AgendamentoCard from '@/components/AgendamentoCard';
 import SafeImage from '@/components/SafeImage';
 import LogoutButton from '@/components/LogoutButton';
 import { supabase } from '@/lib/supabase';
-import { Agendamento, Servico } from '@/types';
+import { Agendamento, Servico } from '@/types/allTypes';
 
 export default async function ProfPage() {
   const today = new Date().toISOString().split('T')[0];

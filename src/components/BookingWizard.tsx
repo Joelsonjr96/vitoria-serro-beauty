@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Servico, HorarioDisponivel } from '@/types';
+import { Servico, HorarioDisponivel } from '@/types/allTypes';
 import { formatarDataBrasileira, formatarDataCurta } from '@/lib/utils';
 
 export default function BookingWizard({

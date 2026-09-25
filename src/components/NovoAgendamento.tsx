@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Servico } from '@/types';
+import { Servico } from '@/types/allTypes';
 
 export default function NovoAgendamento({ servicos }: { servicos: Servico[] }) {
   const [isOpen, setIsOpen] = useState(false);

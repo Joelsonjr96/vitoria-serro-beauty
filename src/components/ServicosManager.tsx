@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Servico } from '@/types';
+import { Servico } from '@/types/allTypes';
 import { supabase } from '@/lib/supabase';
 
 export default function ServicosManager({ initialServicos }: { initialServicos: Servico[] }) {

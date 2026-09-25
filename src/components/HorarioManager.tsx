@@ -1,6 +1,6 @@
 'use client';
 
-import { HorarioDisponivel } from '@/types';
+import { HorarioDisponivel } from '@/types/allTypes';
 import { useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatarDataCurta } from '@/lib/utils';

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatarTelefone } from '@/lib/utils';
 
-import { Agendamento } from '@/types';
+import { Agendamento } from '@/types/allTypes';
 
 interface Cliente {
   id: string;

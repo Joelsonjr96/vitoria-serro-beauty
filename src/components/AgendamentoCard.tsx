@@ -1,6 +1,6 @@
 'use client';
 
-import { Agendamento } from '@/types';
+import { Agendamento } from '@/types/allTypes';
 import { formatarDataBrasileira, formatarTelefone } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { useState } from 'react';
