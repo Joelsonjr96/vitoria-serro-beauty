@@ -17,6 +17,7 @@ A aplicação foi totalmente personalizada seguindo as diretrizes de luxo e sofi
 - **Painel Profissional (`/prof`):**
   - Métricas financeiras (Faturamento Hoje, Na Semana, Total Pendente).
   - Alerta dinâmico de "Próxima Cliente".
+  - **Monitoramento em Tempo Real:** Dashboard profissional atualizado automaticamente via Supabase Realtime para visualização imediata de novos agendamentos e alterações.
   - Gestão de horários e bloqueio de agenda.
 - **PWA (App):** Configurado para ser instalado como um aplicativo nativo em dispositivos iOS e Android, com ícone próprio e sem as barras do navegador.
 
