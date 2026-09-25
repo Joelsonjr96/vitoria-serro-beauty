@@ -74,24 +74,27 @@ export async function POST(request: Request) {
 
     if (clientError) {
       console.error('Erro ao salvar cliente:', clientError);
-      // Não abortamos aqui para não bloquear o agendamento, mas logamos
+      // Alteração: logamos o erro, mas não tentamos retornar um objeto vazio que quebra o .single()
     }
 
     // 2. Insere o agendamento (vinculando cliente_id se possível)
+    const agendamentoData: any = {
+      servico_id: body.servico_id,
+      horario_id: body.horario_id,
+      nome_cliente: body.nome_cliente,
+      telefone_cliente: body.telefone_cliente,
+      anamnese: body.anamnese,
+      status: 'confirmado',
+      criado_em: new Date().toISOString(),
+    };
+
+    if (cliente?.id) {
+      agendamentoData.cliente_id = cliente.id;
+    }
+
     const { data: agendamento, error } = await supabase
       .from('agendamentos')
-      .insert([
-        {
-          servico_id: body.servico_id,
-          horario_id: body.horario_id,
-          nome_cliente: body.nome_cliente,
-          telefone_cliente: body.telefone_cliente,
-          cliente_id: cliente?.id, // Agora vinculamos o ID do cliente
-          anamnese: body.anamnese,
-          status: 'confirmado',
-          criado_em: new Date().toISOString(),
-        },
-      ])
+      .insert([agendamentoData])
       .select()
       .single();
 
