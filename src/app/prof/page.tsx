@@ -149,7 +149,7 @@ export default async function ProfPage() {
                 )}
                 {clientesInativos.length > 0 && (
                   <div className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
-                    <p className="text-[11px] font-medium text-text-main">{clientesInativos.length} inativos (>60d)</p>
+                    <p className="text-[11px] font-medium text-text-main">{clientesInativos.length} inativos (&gt;60d)</p>
                     <a href="#crm-section" className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded">Clientes</a>
                   </div>
                 )}
