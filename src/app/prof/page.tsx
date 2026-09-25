@@ -99,7 +99,6 @@ export default async function ProfPage() {
   const agendamentosConfirmados = agendamentos.filter(ag => ag.status === 'confirmado' && ag.horarios_disponiveis?.data >= today);
   const faturamentoConfirmados = agendamentosConfirmados.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
   const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
   // Encontrar próxima cliente hoje (que não foi cancelada)
