@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Upsert do Cliente (vincula pelo telefone)
-    const { error: clientError } = await supabase
+    const { data: cliente, error: clientError } = await supabase
       .from('clientes')
       .upsert(
         {
@@ -68,13 +68,16 @@ export async function POST(request: Request) {
           telefone: body.telefone_cliente
         },
         { onConflict: 'telefone' }
-      );
+      )
+      .select('id')
+      .single();
 
     if (clientError) {
       console.error('Erro ao salvar cliente:', clientError);
+      // Não abortamos aqui para não bloquear o agendamento, mas logamos
     }
 
-    // 2. Insere o agendamento (agora vinculando cliente_id se possível)
+    // 2. Insere o agendamento (vinculando cliente_id se possível)
     const { data: agendamento, error } = await supabase
       .from('agendamentos')
       .insert([
@@ -83,6 +86,7 @@ export async function POST(request: Request) {
           horario_id: body.horario_id,
           nome_cliente: body.nome_cliente,
           telefone_cliente: body.telefone_cliente,
+          cliente_id: cliente?.id, // Agora vinculamos o ID do cliente
           anamnese: body.anamnese,
           status: 'confirmado',
           criado_em: new Date().toISOString(),
