@@ -21,6 +21,8 @@ export default function BookingWizard({
   const [telefone, setTelefone] = useState('');
   const [anamnese, setAnamnese] = useState({
     alergias: '',
+    alergiaCosmeticos: '',
+    usoUnhasGel: false,
     sensibilidade: false,
     gravidez: false,
     observacoes: ''
@@ -246,18 +248,40 @@ export default function BookingWizard({
                   </h4>
 
                   <div className="space-y-4 bg-bg-primary/20 p-4 rounded-xl border border-accent-lavender/20">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-xs font-medium text-text-muted">Possui alguma alergia? (ex: esmalte, látex, colas)</label>
-                      <input
-                        type="text"
-                        placeholder="Se sim, descreva aqui..."
-                        value={anamnese.alergias}
-                        onChange={(e) => setAnamnese({...anamnese, alergias: e.target.value})}
-                        className="w-full p-3 text-sm border border-accent-lavender/50 bg-white rounded-[8px] focus:border-button-bg outline-none transition-all"
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-medium text-text-muted">Possui alguma alergia? (ex: esmalte, látex, colas)</label>
+                        <input
+                          type="text"
+                          placeholder="Se sim, descreva aqui..."
+                          value={anamnese.alergias}
+                          onChange={(e) => setAnamnese({...anamnese, alergias: e.target.value})}
+                          className="w-full p-3 text-sm border border-accent-lavender/50 bg-white rounded-[8px] focus:border-button-bg outline-none transition-all"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-medium text-text-muted">Alergia a algum cosmético?</label>
+                        <input
+                          type="text"
+                          placeholder="Se sim, qual?"
+                          value={anamnese.alergiaCosmeticos}
+                          onChange={(e) => setAnamnese({...anamnese, alergiaCosmeticos: e.target.value})}
+                          className="w-full p-3 text-sm border border-accent-lavender/50 bg-white rounded-[8px] focus:border-button-bg outline-none transition-all"
+                        />
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <label className="flex items-center gap-3 cursor-pointer p-3 border border-accent-lavender/50 bg-white rounded-lg hover:border-button-bg transition-all">
+                        <input
+                          type="checkbox"
+                          checked={anamnese.usoUnhasGel}
+                          onChange={(e) => setAnamnese({...anamnese, usoUnhasGel: e.target.checked})}
+                          className="w-4 h-4 accent-button-bg"
+                        />
+                        <span className="text-xs font-medium text-text-muted">Usa Unhas de Gel?</span>
+                      </label>
+
                       <label className="flex items-center gap-3 cursor-pointer p-3 border border-accent-lavender/50 bg-white rounded-lg hover:border-button-bg transition-all">
                         <input
                           type="checkbox"

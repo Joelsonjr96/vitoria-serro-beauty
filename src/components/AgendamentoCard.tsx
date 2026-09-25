@@ -88,9 +88,11 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
             <div className="mt-3 p-3 bg-bg-lavender-soft/40 rounded-xl border border-accent-lavender/30 text-[11px] space-y-1">
               <p className="font-bold text-text-muted uppercase tracking-tighter mb-1">📋 Ficha Rápida:</p>
               {agendamento.anamnese.alergias && <p><strong>Alergias:</strong> {agendamento.anamnese.alergias}</p>}
+              {agendamento.anamnese.alergiaCosmeticos && <p><strong>Alergia Cosméticos:</strong> {agendamento.anamnese.alergiaCosmeticos}</p>}
+              {agendamento.anamnese.usoUnhasGel && <p className="text-purple-600 font-bold">💅 Usa Unhas de Gel</p>}
               {agendamento.anamnese.sensibilidade && <p className="text-rose-600 font-bold">⚠️ Olhos Sensíveis</p>}
               {agendamento.anamnese.gravidez && <p className="text-blue-600 font-bold">🤰 Gestante</p>}
-              {!agendamento.anamnese.alergias && !agendamento.anamnese.sensibilidade && !agendamento.anamnese.gravidez && (
+              {!agendamento.anamnese.alergias && !agendamento.anamnese.alergiaCosmeticos && !agendamento.anamnese.usoUnhasGel && !agendamento.anamnese.sensibilidade && !agendamento.anamnese.gravidez && (
                 <p className="italic text-text-muted/60">Sem restrições informadas.</p>
               )}
             </div>
