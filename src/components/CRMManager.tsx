@@ -18,8 +18,13 @@ export default function CRMManager({ agendamentos }: { agendamentos: Agendamento
   const [selectedClient, setSelectedClient] = useState<Cliente | null>(null);
 
   async function fetchClientes() {
-    const { data } = await supabase.from('clientes').select('*').order('nome');
-    setClientes(data || []);
+    const { data, error } = await supabase.from('clientes').select('*').order('nome');
+    if (error) {
+        console.error("Erro ao buscar clientes:", error);
+    } else {
+        console.log("Clientes carregados:", data);
+        setClientes(data || []);
+    }
   }
 
   useEffect(() => {
