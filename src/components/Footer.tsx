@@ -1,3 +1,4 @@
+import Link from "next/link";
 import SafeImage from "./SafeImage";
 
 export default function Footer() {
@@ -43,8 +44,15 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <div className="max-w-4xl mx-auto px-6 mt-16 pt-8 border-t border-white/10 text-center text-[10px] text-white/40 uppercase tracking-widest font-medium">
+      <div className="max-w-4xl mx-auto px-6 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-white/40 uppercase tracking-widest font-medium">
         <p>&copy; 2026 Vitória Serro Beauty. Todos os direitos reservados.</p>
+        <Link
+          href="/prof"
+          className="hover:text-white transition-colors flex items-center gap-1"
+        >
+          <span>Painel Profissional</span>
+          <span className="text-[12px]">🔒</span>
+        </Link>
       </div>
     </footer>
   );
