@@ -96,7 +96,7 @@ export default async function ProfPage() {
   const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
   // Status Separados
-  const agendamentosConfirmados = agendamentos.filter(ag => ag.status === 'confirmado' && ag.horarios_disponiveis?.data >= today);
+  const agendamentosConfirmados = agendamentos.filter(ag => ag.status === 'confirmado' && (ag.horarios_disponiveis?.data || '') >= today);
   const faturamentoConfirmados = agendamentosConfirmados.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
   const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
