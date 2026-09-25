@@ -58,7 +58,10 @@ export default async function ProfPage() {
   // Encontrar próxima cliente hoje (que não foi cancelada)
   const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
   const proximaCliente = agendamentosHoje
-    .filter(ag => ag.horarios_disponiveis?.hora_inicio >= agora && ag.status === 'confirmado')
+    .filter(ag => {
+      const hora = ag.horarios_disponiveis?.hora_inicio;
+      return hora && hora >= agora && ag.status === 'confirmado';
+    })
     .sort((a, b) => (a.horarios_disponiveis?.hora_inicio || '').localeCompare(b.horarios_disponiveis?.hora_inicio || ''))[0];
 
   return (

@@ -3,7 +3,13 @@ import { supabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
-    const body: { servico_id?: string; horario_id?: string; nome_cliente?: string; telefone_cliente?: string } = await request.json();
+    const body: {
+      servico_id?: string;
+      horario_id?: string;
+      nome_cliente?: string;
+      telefone_cliente?: string;
+      anamnese?: any;
+    } = await request.json();
 
     if (!body.servico_id || !body.horario_id || !body.nome_cliente || !body.telefone_cliente) {
       return NextResponse.json({ error: 'Campos obrigatórios ausentes' }, { status: 400 });

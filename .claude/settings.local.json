@@ -67,7 +67,10 @@
       "Bash(npx supabase *)",
       "Bash(supabase *)",
       "Bash(npx ctx7 *)",
-      "Bash(gh auth *)"
+      "Bash(gh auth *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)"
     ]
   }
 }
