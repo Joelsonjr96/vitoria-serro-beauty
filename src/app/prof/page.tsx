@@ -8,8 +8,9 @@ import LogoutButton from '@/components/LogoutButton';
 import { supabase } from '@/lib/supabase';
 import { Agendamento, Servico } from '@/types/allTypes';
 
+export const revalidate = 0; // Força a página a buscar dados frescos sempre
+
 export default async function ProfPage() {
-  export const revalidate = 0; // Força a página a buscar dados frescos sempre
   const today = new Date().toISOString().split('T')[0];
 
   // Busca dados em paralelo
