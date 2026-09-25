@@ -4,43 +4,33 @@ import { Agendamento } from '@/types/allTypes';
 import { formatarDataBrasileira, formatarTelefone } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { useState } from 'react';
+import ConcluirAtendimentoModal from '@/components/ConcluirAtendimentoModal';
 
 export default function AgendamentoCard({ agendamento }: { agendamento: Agendamento }) {
   const [status, setStatus] = useState(agendamento.status);
   const [loading, setLoading] = useState(false);
+  const [showConcluirModal, setShowConcluirModal] = useState(false);
 
-  const updateStatus = async (newStatus: 'confirmado' | 'cancelado' | 'pendente' | 'concluido') => {
+  const updateStatus = async (newStatus: 'confirmado' | 'cancelado' | 'pendente' | 'concluido' | 'em_atendimento' | 'nao_compareceu') => {
     if (newStatus === 'cancelado' && !confirm('Tem certeza que deseja cancelar este agendamento? O horário será liberado.')) return;
 
-    setLoading(false);
     setLoading(true);
 
     try {
-      // Chama a função RPC atômica
-      const { data, error } = await supabase.rpc('cancel_appointment', {
-        p_agendamento_id: agendamento.id
-      });
+      const { error } = await supabase
+        .from('agendamentos')
+        .update({ status: newStatus })
+        .eq('id', agendamento.id);
 
       if (error) throw error;
-      if (data?.error) throw new Error(data.error);
 
-      // Recarrega a página para remover o card cancelado
+      setStatus(newStatus);
+      // Recarrega a página para atualizar métricas
       window.location.reload();
       return;
     } catch (err: unknown) {
-      console.error('Erro completo:', err);
-      let msg = 'Erro desconhecido';
-
-      if (err instanceof Error) {
-        msg = err.message;
-      } else if (typeof err === 'object' && err !== null && 'message' in err) {
-        msg = String((err as { message: unknown }).message);
-      } else if (typeof err === 'string') {
-        msg = err;
-      }
-
-      console.error('Mensagem extraída:', msg);
-      alert(`Erro ao atualizar status: ${msg}`);
+      console.error('Erro ao atualizar status:', err);
+      alert('Erro ao atualizar status.');
     } finally {
       setLoading(false);
     }
@@ -50,8 +40,10 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
     switch (s) {
       case 'confirmado': return 'bg-emerald-50 text-emerald-700 border-emerald-100';
       case 'pendente': return 'bg-amber-50 text-amber-700 border-amber-100';
+      case 'em_atendimento': return 'bg-purple-50 text-purple-700 border-purple-100';
       case 'concluido': return 'bg-blue-50 text-blue-700 border-blue-100';
       case 'cancelado': return 'bg-rose-50 text-rose-700 border-rose-100';
+      case 'nao_compareceu': return 'bg-gray-50 text-gray-700 border-gray-100';
       default: return 'bg-gray-50 text-gray-700 border-gray-100';
     }
   };
@@ -60,8 +52,10 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
     switch (s) {
       case 'confirmado': return 'Confirmado';
       case 'pendente': return 'Pendente';
+      case 'em_atendimento': return 'Em Atendimento';
       case 'concluido': return 'Concluído';
       case 'cancelado': return 'Cancelado';
+      case 'nao_compareceu': return 'Não Compareceu';
       default: return s;
     }
   };
@@ -128,25 +122,31 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
 
         {/* Ações Rápidas */}
         <div className="flex gap-2">
-          {status !== 'concluido' && status !== 'cancelado' && (
+          {status === 'pendente' && (
             <>
-              <button
-                onClick={() => updateStatus('concluido')}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors btn-hover-effect text-xs font-bold uppercase tracking-widest"
-                title="Concluir Atendimento"
-              >
-                ✓ Confirmar
-              </button>
-              <button
-                onClick={() => updateStatus('cancelado')}
-                className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors btn-hover-effect text-xs font-bold uppercase tracking-widest"
-                title="Cancelar Agendamento"
-              >
-                ✕ Cancelar
-              </button>
+              <button onClick={() => updateStatus('confirmado')} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg border border-emerald-100 transition-colors text-xs font-bold uppercase tracking-widest">✓ Confirmar</button>
+              <button onClick={() => updateStatus('cancelado')} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors text-xs font-bold uppercase tracking-widest">✕ Cancelar</button>
             </>
           )}
+          {status === 'confirmado' && (
+            <>
+              <button onClick={() => updateStatus('em_atendimento')} className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg border border-purple-100 transition-colors text-xs font-bold uppercase tracking-widest">▶ Iniciar</button>
+              <button onClick={() => updateStatus('nao_compareceu')} className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-100 transition-colors text-xs font-bold uppercase tracking-widest">! Não Compareceu</button>
+              <button onClick={() => updateStatus('cancelado')} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors text-xs font-bold uppercase tracking-widest">✕ Cancelar</button>
+            </>
+          )}
+          {status === 'em_atendimento' && (
+            <button onClick={() => setShowConcluirModal(true)} className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors text-xs font-bold uppercase tracking-widest">✓ Concluir</button>
+          )}
         </div>
+
+        {showConcluirModal && (
+          <ConcluirAtendimentoModal
+            agendamento={agendamento}
+            onClose={() => setShowConcluirModal(false)}
+            onSuccess={() => window.location.reload()}
+          />
+        )}
       </div>
     </div>
   );

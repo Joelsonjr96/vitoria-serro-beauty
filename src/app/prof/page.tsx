@@ -14,7 +14,7 @@ export default async function ProfPage() {
   const today = new Date().toISOString().split('T')[0];
 
   // Busca dados em paralelo
-  const [agendamentosRes, horariosRes, servicosRes] = await Promise.all([
+  const [agendamentosRes, horariosRes, servicosRes, clientesRes] = await Promise.all([
     supabase
       .from('agendamentos')
       .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
@@ -28,11 +28,15 @@ export default async function ProfPage() {
       .from('servicos')
       .select('*')
       .order('nome', { ascending: true }),
+    supabase
+      .from('clientes')
+      .select('*'),
   ]);
 
   const rawList = (agendamentosRes.data as Agendamento[]) || [];
   const horarios = horariosRes.data || [];
   const servicos = (servicosRes.data as Servico[]) || [];
+  const clientes = clientesRes.data || [];
 
   // Ordenação rigorosa: Data Crescente -> Hora Crescente
   const agendamentos = rawList.sort((a, b) => {
@@ -44,6 +48,27 @@ export default async function ProfPage() {
     const horaB = b.horarios_disponiveis?.hora_inicio || '';
     return horaA.localeCompare(horaB);
   }) as Agendamento[];
+
+  // Métricas de Atenção
+  const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
+
+  const hoje = new Date();
+  const limiteInativo = new Date(hoje.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+  const clientesInativos = clientes.filter(c => {
+    const ultimosAgendamentos = agendamentos
+      .filter(a => a.telefone_cliente === c.telefone)
+      .sort((a, b) => new Date(b.horarios_disponiveis?.data || '').getTime() - new Date(a.horarios_disponiveis?.data || '').getTime());
+
+    if (ultimosAgendamentos.length === 0) return true; // Nunca agendou
+    const dataUltima = new Date(ultimosAgendamentos[0].horarios_disponiveis?.data || '');
+    return dataUltima < limiteInativo;
+  });
+
+  const amanha = new Date();
+  amanha.setDate(amanha.getDate() + 1);
+  const amanhaStr = amanha.toISOString().split('T')[0];
+  const horariosDisponiveisAmanha = horarios.filter(h => h.data === amanhaStr && h.status === 'livre');
 
   // Métricas para o Dashboard
   const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today);
@@ -89,23 +114,54 @@ export default async function ProfPage() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-bg-primary p-6 md:p-12 font-sans text-text-main" suppressHydrationWarning>
-        <header className="max-w-6xl mx-auto mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-accent-lavender pb-8">
-          <div className="flex items-center gap-6">
-            <div className="bg-white p-2 rounded-xl shadow-sm border border-accent-lavender/30">
-               <SafeImage
-                 src="/images/branding/logo-preta.png"
-                 alt="Logo"
-                 width={100}
-                 height={60}
-                 className="h-16 w-auto object-contain"
-               />
+        <header className="max-w-6xl mx-auto mb-12 flex flex-col gap-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-accent-lavender pb-8">
+            <div className="flex items-center gap-6">
+              <div className="bg-white p-2 rounded-xl shadow-sm border border-accent-lavender/30">
+                <SafeImage
+                  src="/images/branding/logo-preta.png"
+                  alt="Logo"
+                  width={100}
+                  height={60}
+                  className="h-16 w-auto object-contain"
+                />
+              </div>
+              <div>
+                <h1 className="text-3xl font-serif text-text-main">Minha Agenda</h1>
+                <p className="text-text-muted text-sm font-medium italic">Painel Administrativo Vitória Serro Beauty</p>
+              </div>
+              <LogoutButton />
             </div>
-            <div>
-              <h1 className="text-3xl font-serif text-text-main">Minha Agenda</h1>
-              <p className="text-text-muted text-sm font-medium italic">Painel Administrativo Vitória Serro Beauty</p>
-            </div>
-            <LogoutButton />
           </div>
+
+          {/* ÁREA DE ATENÇÃO */}
+          {(agendamentosPendentes.length > 0 || clientesInativos.length > 0 || horariosDisponiveisAmanha.length > 0) && (
+            <div className="bg-amber-50 border border-amber-200 p-6 rounded-[24px]">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-amber-800 flex items-center gap-2 mb-6">
+                ⚠️ Atenção
+              </h2>
+              <div className="grid md:grid-cols-3 gap-4">
+                {agendamentosPendentes.length > 0 && (
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex flex-col justify-between">
+                    <p className="text-sm font-medium text-text-main mb-3">{agendamentosPendentes.length} agendamento(s) aguardando confirmação</p>
+                    <a href="#fila-atendimentos" className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-lg w-fit">Confirmar</a>
+                  </div>
+                )}
+                {clientesInativos.length > 0 && (
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex flex-col justify-between">
+                    <p className="text-sm font-medium text-text-main mb-3">{clientesInativos.length} cliente(s) sem agendar há > 60 dias</p>
+                    <a href="#crm-section" className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-lg w-fit">Ver clientes</a>
+                  </div>
+                )}
+                {horariosDisponiveisAmanha.length > 0 && (
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex flex-col justify-between">
+                    <p className="text-sm font-medium text-text-main mb-3">{horariosDisponiveisAmanha.length} horário(s) disponíveis amanhã</p>
+                    <a href="#bloqueio-agenda" className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-lg w-fit">Ver agenda</a>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* DASHBOARD RÁPIDO */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3" suppressHydrationWarning>
@@ -158,7 +214,7 @@ export default async function ProfPage() {
           {/* Coluna de Agendamentos */}
           <section className="lg:col-span-2 space-y-12">
             {/* Nova Seção: CRM */}
-            <div className="space-y-6">
+            <div id="crm-section" className="space-y-6">
               <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
                 👥 Cadastro e Histórico de Clientes
               </h2>
@@ -167,7 +223,7 @@ export default async function ProfPage() {
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div id="fila-atendimentos" className="space-y-6">
               <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
                 Fila de Atendimentos
@@ -190,7 +246,7 @@ export default async function ProfPage() {
           </section>
 
           {/* Coluna de Gestão de Horários Reformulada */}
-          <section className="space-y-6">
+          <section id="bloqueio-agenda" className="space-y-6">
             <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
               🗓️ Bloqueio de Agenda
             </h2>

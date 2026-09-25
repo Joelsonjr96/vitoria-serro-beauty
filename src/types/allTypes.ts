@@ -27,7 +27,7 @@ export type Agendamento = {
     gravidez?: boolean;
     observacoes?: string;
   };
-  status: 'confirmado' | 'cancelado' | 'pendente' | 'concluido';
+  status: 'confirmado' | 'cancelado' | 'pendente' | 'concluido' | 'em_atendimento' | 'nao_compareceu';
   criado_em: string;
   servicos?: Servico;
   horarios_disponiveis?: HorarioDisponivel;
