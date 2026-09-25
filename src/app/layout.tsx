@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "VS Beauty",
   },
   icons: {
-    apple: "/images/LOGO PRETA.png",
+    apple: "/images/logo-fundo-roxo.png",
   },
 };
 

@@ -8,7 +8,7 @@
   "theme_color": "#2A163B",
   "icons": [
     {
-      "src": "/images/LOGO PRETA.png",
+      "src": "/images/logo-fundo-roxo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
