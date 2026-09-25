@@ -37,9 +37,13 @@ export default function BookingWizard({
     );
 
     const hoje = new Date().toISOString().split('T')[0];
+    const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
 
     sortedHorarios.forEach((h, index) => {
-      if (h.data < hoje || h.status !== 'livre') return;
+      // Filtra datas passadas ou horários passados caso seja hoje
+      if (h.data < hoje) return;
+      if (h.data === hoje && h.hora_inicio < agora) return;
+      if (h.status !== 'livre') return;
 
       // Tenta combinar slots consecutivos no mesmo dia
       let totalDuration = 0;
