@@ -1,6 +1,7 @@
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HorarioManager from '@/components/HorarioManager';
 import ServicosManager from '@/components/ServicosManager';
+import CRMManager from '@/components/CRMManager';
 import AgendamentoCard from '@/components/AgendamentoCard';
 import SafeImage from '@/components/SafeImage';
 import { supabase } from '@/lib/supabase';
@@ -26,7 +27,7 @@ export default async function ProfPage() {
       .order('nome', { ascending: true })
   ]);
 
-  const rawList = (agendamentosRes.data as Agendamento[]) || [];
+  const agendamentos = (agendamentosRes.data as Agendamento[]) || [];
   const horarios = horariosRes.data || [];
   const servicos = (servicosRes.data as Servico[]) || [];
 
@@ -144,6 +145,16 @@ export default async function ProfPage() {
                     <p className="text-text-muted italic">Nenhum agendamento encontrado.</p>
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* Nova Seção: CRM */}
+            <div className="space-y-6">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
+                👥 CRM e Clientes
+              </h2>
+              <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
+                <CRMManager agendamentos={agendamentos} />
               </div>
             </div>
 
