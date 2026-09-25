@@ -76,7 +76,7 @@ export default async function AgendadoPage({
     );
   }
 
-  const { servicos, horarios_disponiveis, nome_cliente, servico_id, id: appointmentId } = agendamento;
+  const { servicos, horarios_disponiveis, nome_cliente, id: appointmentId } = agendamento;
 
   async function handleCancelAction() {
     'use server';

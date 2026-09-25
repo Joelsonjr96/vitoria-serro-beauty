@@ -8,7 +8,8 @@ export async function POST(request: Request) {
       horario_id?: string;
       nome_cliente?: string;
       telefone_cliente?: string;
-      anamnese?: any;
+      duracao_minutos?: number;
+      anamnese?: Record<string, unknown>;
     } = await request.json();
 
     if (!body.servico_id || !body.horario_id || !body.nome_cliente || !body.telefone_cliente) {
@@ -29,16 +30,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Horário inicial não encontrado' }, { status: 404 });
     }
 
-    // Busca todos os slots necessários para garantir que estão LIVRES
-    const { data: candidateSlots, error: fetchSlotsError } = await supabase
+    // Busca todos os slots do dia para garantir que estão LIVRES, ignorando duplicatas problemáticas
+    const { data: allSlots, error: fetchSlotsError } = await supabase
       .from('horarios_disponiveis')
-      .select('id, status')
+      .select('id, status, hora_inicio, hora_fim')
       .eq('data', startHorario.data)
-      .gte('hora_inicio', startHorario.hora_inicio)
-      .order('hora_inicio', { ascending: true })
-      .limit(slotsNeeded);
+      .order('hora_inicio', { ascending: true });
 
-    if (fetchSlotsError || !candidateSlots || candidateSlots.length < slotsNeeded) {
+    if (fetchSlotsError || !allSlots) {
+      return NextResponse.json({ error: 'Erro ao buscar horários' }, { status: 500 });
+    }
+
+    // Encontra o índice do slot inicial
+    const startIndex = allSlots.findIndex(s => s.id === body.horario_id);
+    if (startIndex === -1) {
+      return NextResponse.json({ error: 'Horário não encontrado' }, { status: 404 });
+    }
+
+    // Tenta encontrar uma sequência de slots livres
+    const candidateSlots = allSlots.slice(startIndex, startIndex + slotsNeeded);
+
+    if (candidateSlots.length < slotsNeeded) {
       return NextResponse.json({ error: 'Tempo insuficiente para este serviço neste horário' }, { status: 400 });
     }
 
@@ -48,7 +60,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Upsert do Cliente (vincula pelo telefone)
-    const { data: cliente, error: clientError } = await supabase
+    const { error: clientError } = await supabase
       .from('clientes')
       .upsert(
         {
@@ -56,9 +68,7 @@ export async function POST(request: Request) {
           telefone: body.telefone_cliente
         },
         { onConflict: 'telefone' }
-      )
-      .select('id')
-      .single();
+      );
 
     if (clientError) {
       console.error('Erro ao salvar cliente:', clientError);
@@ -100,8 +110,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ message: 'Agendamento realizado com sucesso!', data: agendamento }, { status: 201 });
-  } catch {
-    console.error('Erro no agendamento:');
+  } catch (err) {
+    console.error('Erro detalhado no agendamento:', err);
     return NextResponse.json({ error: 'Erro interno ao processar agendamento' }, { status: 500 });
   }
 }

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatarTelefone } from '@/lib/utils';
 
+import { Agendamento } from '@/types';
+
 interface Cliente {
   id: string;
   nome: string;
@@ -11,20 +13,21 @@ interface Cliente {
   observacoes: string | null;
 }
 
-export default function CRMManager() {
+export default function CRMManager({ agendamentos }: { agendamentos: Agendamento[] }) {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClient, setSelectedClient] = useState<Cliente | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchClientes();
-  }, []);
 
   async function fetchClientes() {
     const { data } = await supabase.from('clientes').select('*').order('nome');
     if (data) setClientes(data);
   }
+
+  useEffect(() => {
+    (async () => {
+      await fetchClientes();
+    })();
+  }, []);
 
   async function updateObservacoes(id: string, observacoes: string) {
     await supabase.from('clientes').update({ observacoes }).eq('id', id);
@@ -35,6 +38,11 @@ export default function CRMManager() {
     c.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.telefone.includes(searchTerm)
   );
+
+  const getHistorico = (telefone: string) => {
+    return agendamentos.filter(a => a.telefone_cliente === telefone);
+  };
+
 
   return (
     <div className="space-y-6">
@@ -73,6 +81,17 @@ export default function CRMManager() {
               onBlur={(e) => updateObservacoes(selectedClient.id, e.target.value)}
               placeholder="Adicionar observações..."
             />
+
+            <div className="mt-6">
+              <h4 className="font-bold text-sm mb-3">Histórico</h4>
+              <div className="space-y-2">
+                {getHistorico(selectedClient.telefone).map(a => (
+                  <div key={a.id} className="text-xs p-3 bg-bg-lavender-soft rounded-lg">
+                    {a.horarios_disponiveis?.data} - {a.servicos?.nome} ({a.status})
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}

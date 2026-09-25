@@ -43,8 +43,8 @@ test.describe('Verificação de Páginas do Projeto', () => {
     await page.locator('button:text-matches("^[0-9]{2}:[0-9]{2}$")').first().click();
 
     // Preenche dados
-    await page.getByPlaceholder(/Nome Completo/i).fill('Teste Playwright');
-    await page.getByPlaceholder(/WhatsApp/i).fill('21999999999');
+    await page.getByPlaceholder('Nome Completo').fill('Teste Playwright');
+    await page.getByPlaceholder('WhatsApp (com DDD)').fill('21999999999');
 
     // Confirma
     await page.getByRole('button', { name: /Confirmar Agendamento/i }).click();

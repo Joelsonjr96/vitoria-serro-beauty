@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Servico, HorarioDisponivel } from '@/types';
 import { formatarDataBrasileira, formatarDataCurta } from '@/lib/utils';
@@ -36,45 +36,52 @@ export default function BookingWizard({
       `${a.data}T${a.hora_inicio}`.localeCompare(`${b.data}T${b.hora_inicio}`)
     );
 
-    const SLOTS_NEEDED = Math.ceil(servico.duracao_minutos / 30);
+    const hoje = new Date().toISOString().split('T')[0];
 
     sortedHorarios.forEach((h, index) => {
-      if (h.status !== 'livre') return;
+      if (h.data < hoje || h.status !== 'livre') return;
 
-      // Check if there are enough consecutive free slots
-      let isPossible = true;
-      for (let i = 0; i < SLOTS_NEEDED; i++) {
-        const nextSlot = sortedHorarios[index + i];
+      // Tenta combinar slots consecutivos no mesmo dia
+      let totalDuration = 0;
+      let consecutiveSlots: HorarioDisponivel[] = [];
 
-        // Slot must exist, be on the same day, and be free
-        if (!nextSlot || nextSlot.data !== h.data || nextSlot.status !== 'livre') {
-          isPossible = false;
-          break;
+      for (let i = index; i < sortedHorarios.length; i++) {
+        const slot = sortedHorarios[i];
+
+        // Slot deve ser do mesmo dia, status livre, e começar onde o anterior terminou
+        if (slot.data !== h.data || slot.status !== 'livre') break;
+
+        if (consecutiveSlots.length > 0) {
+          const prevSlot = consecutiveSlots[consecutiveSlots.length - 1];
+          if (slot.hora_inicio !== prevSlot.hora_fim) break;
         }
 
-        // Optional: verify they are indeed consecutive (30 min gaps)
-        if (i > 0) {
-          const prevSlot = sortedHorarios[index + i - 1];
-          const prevTime = new Date(`2000-01-01T${prevSlot.hora_inicio}`);
-          const currTime = new Date(`2000-01-01T${nextSlot.hora_inicio}`);
-          const diffMinutes = (currTime.getTime() - prevTime.getTime()) / (1000 * 60);
+        consecutiveSlots.push(slot);
 
-          if (diffMinutes !== 30) {
-            isPossible = false;
-            break;
-          }
+        const [startH, startM] = slot.hora_inicio.split(':').map(Number);
+        const [endH, endM] = slot.hora_fim.split(':').map(Number);
+        totalDuration += (endH * 60 + endM) - (startH * 60 + startM);
+
+        if (totalDuration >= servico.duracao_minutos) {
+          if (!groups[h.data]) groups[h.data] = [];
+          groups[h.data].push(h);
+          break; // Achou combinação válida
         }
-      }
-
-      if (isPossible) {
-        if (!groups[h.data]) groups[h.data] = [];
-        groups[h.data].push(h);
       }
     });
+
     return groups;
   }, [horarios, servico.duracao_minutos]);
 
-  const datasDisponiveis = useMemo(() => Object.keys(horariosPorData).sort(), [horariosPorData]);
+  const datasDisponiveis = useMemo(() => {
+    return Object.keys(horariosPorData).sort();
+  }, [horariosPorData]);
+
+  useEffect(() => {
+    if (datasDisponiveis.length > 0 && (!selectedDate || !datasDisponiveis.includes(selectedDate))) {
+      setSelectedDate(datasDisponiveis[0]);
+    }
+  }, [datasDisponiveis, selectedDate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,7 +108,9 @@ export default function BookingWizard({
         const redirectId = result.data?.id || selectedHorario.id;
         router.push(`/agendado/${redirectId}`);
       } else {
-        alert('Erro ao realizar o agendamento. Por favor, tente novamente.');
+        const errorData = await response.json();
+        console.error('Erro no agendamento:', errorData);
+        alert(`Erro ao realizar o agendamento: ${errorData.error || 'Tente novamente.'}`);
       }
     } catch {
       alert('Erro de conexão. Verifique sua internet.');
@@ -152,7 +161,7 @@ export default function BookingWizard({
             2. Horários para {formatarDataBrasileira(selectedDate)}
           </h2>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-            {horariosPorData[selectedDate].map((h) => (
+            {selectedDate && horariosPorData[selectedDate]?.map((h) => (
               <button
                 key={h.id}
                 onClick={() => setSelectedHorario(h)}

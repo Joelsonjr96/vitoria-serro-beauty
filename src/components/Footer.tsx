@@ -10,6 +10,8 @@ export default function Footer() {
             src="/images/logo-fundo-preto.png"
             alt="Vitória Serro Beauty Logo Branca"
             className="h-16 w-auto object-contain"
+            width={300}
+            height={150}
           />
           <div>
             <h4 className="text-white/40 mb-3 uppercase tracking-widest text-[10px] font-bold">Localização</h4>

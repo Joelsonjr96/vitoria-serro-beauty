@@ -10,6 +10,8 @@ export default function Header() {
             src="/images/LOGO PRETA.png"
             alt="Vitória Serro Beauty Logo"
             className="h-14 w-auto object-contain"
+            width={200}
+            height={100}
           />
         </Link>
       </nav>

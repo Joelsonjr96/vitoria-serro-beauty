@@ -51,6 +51,7 @@ export default async function Home() {
              src="/images/vitoria serro.jpg"
              alt="Close-up Lash Design"
              className="w-full h-full object-cover"
+             priority={true}
            />
         </div>
 
@@ -69,6 +70,8 @@ export default async function Home() {
               src="/images/LOGO DOURADA.png"
               alt="Vitória Serro Beauty Ouro"
               className="h-40 md:h-56 w-auto object-contain"
+              width={400}
+              height={200}
             />
           </div>
 
@@ -88,7 +91,7 @@ export default async function Home() {
       {/* About Section */}
       <section className="bg-bg-lavender-soft border border-accent-lavender p-10 md:p-12 my-20 max-w-4xl mx-auto rounded-[16px] shadow-sm">
         <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-           <div className="h-80 rounded-[8px] overflow-hidden border border-accent-lavender bg-bg-lavender-soft/30">
+           <div className="h-80 rounded-[8px] overflow-hidden border border-accent-lavender bg-bg-lavender-soft/30 relative">
               <SafeImage
                 src="/images/vitoria serro.jpg"
                 alt="Vitória Serro trabalhando"
@@ -122,6 +125,8 @@ export default async function Home() {
                         src="/images/LOGO PRETA.png"
                         alt="VS Monograma"
                         className="h-6 w-auto object-contain"
+                        width={100}
+                        height={50}
                       />
                     </div>
                     {index === 0 && (

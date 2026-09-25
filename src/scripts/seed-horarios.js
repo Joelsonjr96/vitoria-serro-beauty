@@ -1,5 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config({ path: '.env.local' });
+import { createClient } from '@supabase/supabase-js';
+import 'dotenv/config';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -13,6 +13,17 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function popularHorarios() {
   console.log('Iniciando povoamento de horários...');
+
+  // Verifica se já existem horários para não duplicar
+  const { data: existingSlots } = await supabase
+    .from('horarios_disponiveis')
+    .select('id')
+    .limit(1);
+
+  if (existingSlots && existingSlots.length > 0) {
+    console.log('Horários já existentes no banco. Abortando seed para evitar duplicatas.');
+    return;
+  }
 
   const hoje = new Date();
   const horariosParaInserir = [];

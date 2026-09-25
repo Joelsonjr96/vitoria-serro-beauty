@@ -18,8 +18,8 @@ test.describe('Verificação de Identidade Visual e Coerência de Marca', () => 
     expect(headerSrc?.replace(/%20/g, ' ')).toContain('LOGO PRETA.png');
 
     // 2. Verificação da Hero Section (Identidade de Luxo)
-    // Procura por qualquer imagem cujo src contenha "LOGO DOURADA"
-    const goldLogo = page.locator('img[src*="LOGO DOURADA"]').first();
+    // Procura pela logo dourada pelo alt text
+    const goldLogo = page.getByAltText('Vitória Serro Beauty Ouro');
     await expect(goldLogo).toBeVisible();
 
     // Verificação de textos da Hero (Luxo)
@@ -34,8 +34,8 @@ test.describe('Verificação de Identidade Visual e Coerência de Marca', () => 
     // 4. Verificação do Rodapé (Identidade Escura de Luxo)
     const footer = page.locator('footer');
     // Verifica se a classe de fundo lilás escuro está presente (escapando o caractere [)
-    await expect(footer).toHaveClass(/bg-\[#2D1B2D\]/);
-    const footerLogo = footer.locator('img[src*="LOGO DOURADA"]');
+    await expect(footer).toHaveClass(/bg-brand-purple-dark/);
+    const footerLogo = footer.getByAltText('Vitória Serro Beauty Logo Branca');
     await expect(footerLogo).toBeVisible();
     await expect(footer).toContainText('Av. Braz de Pina 1720');
   });

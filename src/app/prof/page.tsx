@@ -1,7 +1,9 @@
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HorarioManager from '@/components/HorarioManager';
 import ServicosManager from '@/components/ServicosManager';
+import ConfiguracoesManager from '@/components/ConfiguracoesManager';
 import CRMManager from '@/components/CRMManager';
+import NovoAgendamento from '@/components/NovoAgendamento';
 import AgendamentoCard from '@/components/AgendamentoCard';
 import SafeImage from '@/components/SafeImage';
 import { supabase } from '@/lib/supabase';
@@ -11,7 +13,7 @@ export default async function ProfPage() {
   const today = new Date().toISOString().split('T')[0];
 
   // Busca dados em paralelo
-  const [agendamentosRes, horariosRes, servicosRes] = await Promise.all([
+  const [agendamentosRes, horariosRes, servicosRes, configRes] = await Promise.all([
     supabase
       .from('agendamentos')
       .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
@@ -24,12 +26,16 @@ export default async function ProfPage() {
     supabase
       .from('servicos')
       .select('*')
-      .order('nome', { ascending: true })
+      .order('nome', { ascending: true }),
+    supabase
+      .from('configuracoes')
+      .select('*')
   ]);
 
-  const agendamentos = (agendamentosRes.data as Agendamento[]) || [];
+  const rawList = (agendamentosRes.data as Agendamento[]) || [];
   const horarios = horariosRes.data || [];
   const servicos = (servicosRes.data as Servico[]) || [];
+  const configuracoes = configRes.data || [];
 
   // Ordenação rigorosa: Data Crescente -> Hora Crescente
   const agendamentos = rawList.sort((a, b) => {
@@ -82,6 +88,8 @@ export default async function ProfPage() {
                <SafeImage
                  src="/images/LOGO PRETA.png"
                  alt="Logo"
+                 width={100}
+                 height={60}
                  className="h-16 w-auto object-contain"
                />
             </div>
@@ -135,6 +143,8 @@ export default async function ProfPage() {
                 Fila de Atendimentos
               </h2>
 
+              <NovoAgendamento servicos={servicos} />
+
               <div className="grid gap-4">
                 {agendamentos.length > 0 ? (
                   agendamentos.map((ag) => (
@@ -165,6 +175,16 @@ export default async function ProfPage() {
               </h2>
               <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
                 <ServicosManager initialServicos={servicos} />
+              </div>
+            </div>
+
+            {/* Configurações */}
+            <div className="space-y-6">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
+                ⚙️ Configurações
+              </h2>
+              <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
+                <ConfiguracoesManager initialConfig={configuracoes} />
               </div>
             </div>
           </section>

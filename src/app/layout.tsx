@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -14,11 +14,14 @@ const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#2A163B",
+};
+
 export const metadata: Metadata = {
   title: "Vitória Serro Beauty | Agendamento",
   description: "Sistema de agendamento do estúdio de lash designer Vitória Serro Beauty.",
   manifest: "/manifest.json",
-  themeColor: "#2A163B",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
