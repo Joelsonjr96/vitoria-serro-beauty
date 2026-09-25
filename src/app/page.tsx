@@ -1,3 +1,4 @@
+// Repositório atualizado para garantir build na Vercel
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import SafeImage from '@/components/SafeImage';
