@@ -70,6 +70,37 @@ export default async function ProfPage() {
   const amanhaStr = amanha.toISOString().split('T')[0];
   const horariosDisponiveisAmanha = horarios.filter(h => h.data === amanhaStr && h.status === 'livre');
 
+  // Estrutura de Alertas Dinâmica
+  const alertas = [
+    agendamentosPendentes.length > 0 && {
+      id: 'pendentes',
+      titulo: 'Confirmações Pendentes',
+      mensagem: `${agendamentosPendentes.length} agendamento(s) aguardando confirmação`,
+      link: '#fila-atendimentos',
+      textoBotao: 'Confirmar',
+      prioridade: 1,
+      icone: '🔔'
+    },
+    horariosDisponiveisAmanha.length > 0 && {
+      id: 'vagas',
+      titulo: 'Agenda Amanhã',
+      mensagem: `${horariosDisponiveisAmanha.length} vaga(s) disponível(is)`,
+      link: '#bloqueio-agenda',
+      textoBotao: 'Agenda',
+      prioridade: 2,
+      icone: '📅'
+    },
+    clientesInativos.length > 0 && {
+      id: 'inativos',
+      titulo: 'Clientes para Reativar',
+      mensagem: `${clientesInativos.length} cliente(s) inativo(s) (>60d)`,
+      link: '#crm-section',
+      textoBotao: 'Clientes',
+      prioridade: 3,
+      icone: '🔄'
+    }
+  ].filter(Boolean).sort((a: any, b: any) => a.prioridade - b.prioridade);
+
   // Métricas para o Dashboard
   const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today);
   const faturamentoHoje = agendamentosHoje.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
@@ -134,30 +165,21 @@ export default async function ProfPage() {
           </div>
 
           {/* ÁREA DE ATENÇÃO */}
-          {(agendamentosPendentes.length > 0 || clientesInativos.length > 0 || horariosDisponiveisAmanha.length > 0) && (
+          {alertas.length > 0 && (
             <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-amber-800 flex items-center gap-2 mb-3">
                 ⚠️ Atenção
               </h2>
               <div className="grid md:grid-cols-3 gap-2">
-                {agendamentosPendentes.length > 0 && (
-                  <div className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
-                    <p className="text-[11px] font-medium text-text-main">{agendamentosPendentes.length} pendentes</p>
-                    <a href="#fila-atendimentos" className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded">Confirmar</a>
+                {alertas.map(alerta => (
+                  <div key={alerta.id} className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
+                    <div className="flex flex-col gap-0.5">
+                        <p className="text-[10px] font-bold text-amber-900 uppercase tracking-tighter">{alerta.icone} {alerta.titulo}</p>
+                        <p className="text-[11px] font-medium text-text-main">{alerta.mensagem}</p>
+                    </div>
+                    <a href={alerta.link} className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded whitespace-nowrap">{alerta.textoBotao}</a>
                   </div>
-                )}
-                {clientesInativos.length > 0 && (
-                  <div className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
-                    <p className="text-[11px] font-medium text-text-main">{clientesInativos.length} inativos (&gt;60d)</p>
-                    <a href="#crm-section" className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded">Clientes</a>
-                  </div>
-                )}
-                {horariosDisponiveisAmanha.length > 0 && (
-                  <div className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
-                    <p className="text-[11px] font-medium text-text-main">{horariosDisponiveisAmanha.length} vagas amanhã</p>
-                    <a href="#bloqueio-agenda" className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded">Agenda</a>
-                  </div>
-                )}
+                ))}
               </div>
             </div>
           )}
