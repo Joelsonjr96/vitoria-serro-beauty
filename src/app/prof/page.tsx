@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HorarioManager from '@/components/HorarioManager';
 import CRMManager from '@/components/CRMManager';
@@ -6,69 +9,111 @@ import AgendamentoCard from '@/components/AgendamentoCard';
 import SafeImage from '@/components/SafeImage';
 import LogoutButton from '@/components/LogoutButton';
 import { supabase } from '@/lib/supabase';
-import { Agendamento, Servico } from '@/types/allTypes';
+import { Agendamento, Servico, HorarioDisponivel } from '@/types/allTypes';
 
-export const revalidate = 0;
+export default function ProfPage() {
+  const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
+  const [horarios, setHorarios] = useState<HorarioDisponivel[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [clientes, setClientes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function ProfPage() {
+  const fetchData = async () => {
+    const [agendamentosRes, horariosRes, servicosRes, clientesRes] = await Promise.all([
+      supabase
+        .from('agendamentos')
+        .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
+        .neq('status', 'cancelado'),
+      supabase
+        .from('horarios_disponiveis')
+        .select('*')
+        .order('data', { ascending: true })
+        .order('hora_inicio', { ascending: true }),
+      supabase
+        .from('servicos')
+        .select('*')
+        .order('nome', { ascending: true }),
+      supabase
+        .from('clientes')
+        .select('*'),
+    ]);
+
+    const rawList = (agendamentosRes.data as Agendamento[]) || [];
+
+    // Ordenação
+    const sortedAgendamentos = rawList.sort((a, b) => {
+      const dataA = a.horarios_disponiveis?.data || '';
+      const dataB = b.horarios_disponiveis?.data || '';
+      if (dataA !== dataB) return dataA.localeCompare(dataB);
+
+      const horaA = a.horarios_disponiveis?.hora_inicio || '';
+      const horaB = b.horarios_disponiveis?.hora_inicio || '';
+      return horaA.localeCompare(horaB);
+    });
+
+    setAgendamentos(sortedAgendamentos);
+    setHorarios(horariosRes.data || []);
+    setServicos((servicosRes.data as Servico[]) || []);
+    setClientes(clientesRes.data || []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+
+    // Subscribe to changes
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'agendamentos' }, () => {
+        fetchData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  if (loading) return <div className="min-h-screen bg-bg-primary flex items-center justify-center">Carregando...</div>;
+
   const today = new Date().toISOString().split('T')[0];
+  const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-  // Busca dados em paralelo
-  const [agendamentosRes, horariosRes, servicosRes, clientesRes] = await Promise.all([
-    supabase
-      .from('agendamentos')
-      .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
-      .neq('status', 'cancelado'),
-    supabase
-      .from('horarios_disponiveis')
-      .select('*')
-      .order('data', { ascending: true })
-      .order('hora_inicio', { ascending: true }),
-    supabase
-      .from('servicos')
-      .select('*')
-      .order('nome', { ascending: true }),
-    supabase
-      .from('clientes')
-      .select('*'),
-  ]);
+  // Métricas para o Dashboard (calculadas a partir do estado 'agendamentos')
+  const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today);
+  const faturamentoHoje = agendamentosHoje.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  const rawList = (agendamentosRes.data as Agendamento[]) || [];
-  const horarios = horariosRes.data || [];
-  const servicos = (servicosRes.data as Servico[]) || [];
-  const clientes = clientesRes.data || [];
+  const umaSemanaDepois = new Date();
+  umaSemanaDepois.setDate(umaSemanaDepois.getDate() + 7);
+  const umaSemanaDepoisStr = umaSemanaDepois.toISOString().split('T')[0];
 
-  // Ordenação rigorosa: Data Crescente -> Hora Crescente
-  const agendamentos = rawList.sort((a, b) => {
-    const dataA = a.horarios_disponiveis?.data || '';
-    const dataB = b.horarios_disponiveis?.data || '';
-    if (dataA !== dataB) return dataA.localeCompare(dataB);
-
-    const horaA = a.horarios_disponiveis?.hora_inicio || '';
-    const horaB = b.horarios_disponiveis?.hora_inicio || '';
-    return horaA.localeCompare(horaB);
-  }) as Agendamento[];
-
-  // Métricas de Atenção
-  const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
-
-  const hoje = new Date();
-  const limiteInativo = new Date(hoje.getTime() - 60 * 24 * 60 * 60 * 1000);
-
-  const clientesInativos = clientes.filter(c => {
-    const ultimosAgendamentos = agendamentos
-      .filter(a => a.telefone_cliente === c.telefone)
-      .sort((a, b) => new Date(b.horarios_disponiveis?.data || '').getTime() - new Date(a.horarios_disponiveis?.data || '').getTime());
-
-    if (ultimosAgendamentos.length === 0) return true; // Nunca agendou
-    const dataUltima = new Date(ultimosAgendamentos[0].horarios_disponiveis?.data || '');
-    return dataUltima < limiteInativo;
+  const agendamentosSemana = agendamentos.filter(ag => {
+    const dataAg = ag.horarios_disponiveis?.data || '';
+    return dataAg >= today && dataAg <= umaSemanaDepoisStr;
   });
+  const faturamentoSemana = agendamentosSemana.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  const amanha = new Date();
-  amanha.setDate(amanha.getDate() + 1);
-  const amanhaStr = amanha.toISOString().split('T')[0];
-  const horariosDisponiveisAmanha = horarios.filter(h => h.data === amanhaStr && h.status === 'livre');
+  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+  const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0];
+
+  const agendamentosMes = agendamentos.filter(ag => {
+    const dataAg = ag.horarios_disponiveis?.data || '';
+    return dataAg >= startOfMonth && dataAg <= endOfMonth;
+  });
+  const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+
+  const agendamentosConfirmados = agendamentos.filter(ag => ag.status === 'confirmado' && (ag.horarios_disponiveis?.data || '') >= today);
+  const faturamentoConfirmados = agendamentosConfirmados.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+
+  const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
+  const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+
+  const proximaCliente = agendamentosHoje
+    .filter(ag => {
+      const hora = ag.horarios_disponiveis?.hora_inicio;
+      return hora && hora >= agora && ag.status === 'confirmado';
+    })
+    .sort((a, b) => (a.horarios_disponiveis?.hora_inicio || '').localeCompare(b.horarios_disponiveis?.hora_inicio || ''))[0];
 
   // Estrutura de Alertas Dinâmica
   interface Alerta {
@@ -80,6 +125,22 @@ export default async function ProfPage() {
     prioridade: number;
     icone: string;
   }
+
+  const amanha = new Date();
+  amanha.setDate(amanha.getDate() + 1);
+  const amanhaStr = amanha.toISOString().split('T')[0];
+  const horariosDisponiveisAmanha = horarios.filter(h => h.data === amanhaStr && h.status === 'livre');
+
+  const limiteInativo = new Date(new Date().getTime() - 60 * 24 * 60 * 60 * 1000);
+  const clientesInativos = clientes.filter(c => {
+    const ultimosAgendamentos = agendamentos
+      .filter(a => a.telefone_cliente === c.telefone)
+      .sort((a, b) => new Date(b.horarios_disponiveis?.data || '').getTime() - new Date(a.horarios_disponiveis?.data || '').getTime());
+
+    if (ultimosAgendamentos.length === 0) return true;
+    const dataUltima = new Date(ultimosAgendamentos[0].horarios_disponiveis?.data || '');
+    return dataUltima < limiteInativo;
+  });
 
   const alertas: Alerta[] = [
     agendamentosPendentes.length > 0 && {
@@ -112,46 +173,6 @@ export default async function ProfPage() {
   ].filter(Boolean) as Alerta[];
 
   alertas.sort((a, b) => a.prioridade - b.prioridade);
-
-  // Métricas para o Dashboard
-  const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today);
-  const faturamentoHoje = agendamentosHoje.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
-
-  // Métrica da Semana
-  const umaSemanaDepois = new Date();
-  umaSemanaDepois.setDate(umaSemanaDepois.getDate() + 7);
-  const umaSemanaDepoisStr = umaSemanaDepois.toISOString().split('T')[0];
-
-  const agendamentosSemana = agendamentos.filter(ag => {
-    const dataAg = ag.horarios_disponiveis?.data || '';
-    return dataAg >= today && dataAg <= umaSemanaDepoisStr;
-  });
-  const faturamentoSemana = agendamentosSemana.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
-
-  // Métrica do Mês
-  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
-  const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0];
-
-  const agendamentosMes = agendamentos.filter(ag => {
-    const dataAg = ag.horarios_disponiveis?.data || '';
-    return dataAg >= startOfMonth && dataAg <= endOfMonth;
-  });
-  const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
-
-  // Status Separados
-  const agendamentosConfirmados = agendamentos.filter(ag => ag.status === 'confirmado' && (ag.horarios_disponiveis?.data || '') >= today);
-  const faturamentoConfirmados = agendamentosConfirmados.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
-
-  const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
-
-  // Encontrar próxima cliente hoje (que não foi cancelada)
-  const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
-  const proximaCliente = agendamentosHoje
-    .filter(ag => {
-      const hora = ag.horarios_disponiveis?.hora_inicio;
-      return hora && hora >= agora && ag.status === 'confirmado';
-    })
-    .sort((a, b) => (a.horarios_disponiveis?.hora_inicio || '').localeCompare(b.horarios_disponiveis?.hora_inicio || ''))[0];
 
   return (
     <ProtectedRoute>
@@ -255,8 +276,8 @@ export default async function ProfPage() {
               <NovoAgendamento servicos={servicos} />
 
               <div className="grid gap-4">
-                {agendamentos.length > 0 ? (
-                  agendamentos.map((ag) => (
+                {agendamentos.filter(ag => ag.status !== 'concluido').length > 0 ? (
+                  agendamentos.filter(ag => ag.status !== 'concluido').map((ag) => (
                     <AgendamentoCard key={ag.id} agendamento={ag} />
                   ))
                 ) : (
