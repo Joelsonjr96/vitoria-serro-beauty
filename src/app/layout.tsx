@@ -28,7 +28,8 @@ export const metadata: Metadata = {
     title: "VS Beauty",
   },
   icons: {
-    apple: "/images/logo-fundo-roxo.png",
+    icon: "/favicon.png",
+    apple: "/images/branding/logo-fundo-roxo.png",
   },
 };
 
