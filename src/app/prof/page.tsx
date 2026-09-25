@@ -114,49 +114,49 @@ export default async function ProfPage() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-bg-primary p-6 md:p-12 font-sans text-text-main" suppressHydrationWarning>
-        <header className="max-w-6xl mx-auto mb-12 flex flex-col gap-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-accent-lavender pb-8">
-            <div className="flex items-center gap-6">
-              <div className="bg-white p-2 rounded-xl shadow-sm border border-accent-lavender/30">
+        <header className="max-w-6xl mx-auto mb-8 flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-4 border-b border-accent-lavender pb-4">
+            <div className="flex items-center gap-4">
+              <div className="bg-white p-1 rounded-lg shadow-sm border border-accent-lavender/30">
                 <SafeImage
                   src="/images/branding/logo-preta.png"
                   alt="Logo"
-                  width={100}
-                  height={60}
-                  className="h-16 w-auto object-contain"
+                  width={60}
+                  height={36}
+                  className="h-10 w-auto object-contain"
                 />
               </div>
               <div>
-                <h1 className="text-3xl font-serif text-text-main">Minha Agenda</h1>
-                <p className="text-text-muted text-sm font-medium italic">Painel Administrativo Vitória Serro Beauty</p>
+                <h1 className="text-xl font-serif text-text-main">Minha Agenda</h1>
+                <p className="text-text-muted text-[10px] font-medium uppercase tracking-wider">Painel Administrativo</p>
               </div>
-              <LogoutButton />
             </div>
+            <LogoutButton />
           </div>
 
           {/* ÁREA DE ATENÇÃO */}
           {(agendamentosPendentes.length > 0 || clientesInativos.length > 0 || horariosDisponiveisAmanha.length > 0) && (
-            <div className="bg-amber-50 border border-amber-200 p-6 rounded-[24px]">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-amber-800 flex items-center gap-2 mb-6">
+            <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+              <h2 className="text-[10px] font-bold uppercase tracking-widest text-amber-800 flex items-center gap-2 mb-3">
                 ⚠️ Atenção
               </h2>
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-3 gap-2">
                 {agendamentosPendentes.length > 0 && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex flex-col justify-between">
-                    <p className="text-sm font-medium text-text-main mb-3">{agendamentosPendentes.length} agendamento(s) aguardando confirmação</p>
-                    <a href="#fila-atendimentos" className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-lg w-fit">Confirmar</a>
+                  <div className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
+                    <p className="text-[11px] font-medium text-text-main">{agendamentosPendentes.length} pendentes</p>
+                    <a href="#fila-atendimentos" className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded">Confirmar</a>
                   </div>
                 )}
                 {clientesInativos.length > 0 && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex flex-col justify-between">
-                    <p className="text-sm font-medium text-text-main mb-3">{clientesInativos.length} cliente(s) sem agendar há > 60 dias</p>
-                    <a href="#crm-section" className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-lg w-fit">Ver clientes</a>
+                  <div className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
+                    <p className="text-[11px] font-medium text-text-main">{clientesInativos.length} inativos (>60d)</p>
+                    <a href="#crm-section" className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded">Clientes</a>
                   </div>
                 )}
                 {horariosDisponiveisAmanha.length > 0 && (
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex flex-col justify-between">
-                    <p className="text-sm font-medium text-text-main mb-3">{horariosDisponiveisAmanha.length} horário(s) disponíveis amanhã</p>
-                    <a href="#bloqueio-agenda" className="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1.5 rounded-lg w-fit">Ver agenda</a>
+                  <div className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
+                    <p className="text-[11px] font-medium text-text-main">{horariosDisponiveisAmanha.length} vagas amanhã</p>
+                    <a href="#bloqueio-agenda" className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded">Agenda</a>
                   </div>
                 )}
               </div>
@@ -164,34 +164,34 @@ export default async function ProfPage() {
           )}
 
           {/* DASHBOARD RÁPIDO */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3" suppressHydrationWarning>
-            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Hoje</p>
-              <p className="text-lg font-serif text-text-main">{agendamentosHoje.length}</p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2" suppressHydrationWarning>
+            <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Hoje</p>
+              <p className="text-sm font-serif text-text-main">{agendamentosHoje.length}</p>
               <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoHoje.toFixed(2)}</p>
             </div>
 
-            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Esta Semana</p>
-              <p className="text-lg font-serif text-text-main">{agendamentosSemana.length}</p>
+            <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Semana</p>
+              <p className="text-sm font-serif text-text-main">{agendamentosSemana.length}</p>
               <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoSemana.toFixed(2)}</p>
             </div>
 
-            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Este Mês</p>
-              <p className="text-lg font-serif text-text-main">{agendamentosMes.length}</p>
+            <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Mês</p>
+              <p className="text-sm font-serif text-text-main">{agendamentosMes.length}</p>
               <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoMes.toFixed(2)}</p>
             </div>
 
-            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Confirmados</p>
-              <p className="text-lg font-serif text-text-main">{agendamentosConfirmados.length}</p>
+            <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Confirmados</p>
+              <p className="text-sm font-serif text-text-main">{agendamentosConfirmados.length}</p>
               <p className="text-[10px] font-medium text-button-bg">R$ {faturamentoConfirmados.toFixed(2)}</p>
             </div>
 
-            <div className="bg-bg-card border border-accent-lavender px-4 py-3 rounded-[16px] shadow-sm">
-              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-1">Aguardando Conf.</p>
-              <p className="text-lg font-serif text-text-main">{agendamentosPendentes.length}</p>
+            <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
+              <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Pendentes</p>
+              <p className="text-sm font-serif text-text-main">{agendamentosPendentes.length}</p>
               <p className="text-[10px] font-medium text-amber-600">R$ {faturamentoPendentes.toFixed(2)}</p>
             </div>
           </div>

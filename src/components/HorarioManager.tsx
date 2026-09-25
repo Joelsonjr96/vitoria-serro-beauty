@@ -88,21 +88,21 @@ export default function HorarioManager({ initialHorarios }: { initialHorarios: H
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {filteredHorarios.map((h) => (
           <button
             key={h.id}
             onClick={() => toggleStatus(h.id, h.status)}
             disabled={loadingId === h.id}
-            className={`py-3 px-2 text-xs font-bold rounded-[10px] transition-all border shadow-sm ${
+            className={`py-4 px-3 text-xs font-bold rounded-[12px] transition-all border shadow-sm ${
               h.status === 'livre'
                 ? 'bg-white text-text-main border-accent-lavender hover:border-button-bg'
                 : 'bg-accent-soft/40 text-text-main border-accent-soft/60 hover:bg-accent-soft/60'
             } ${loadingId === h.id ? 'animate-pulse opacity-50' : ''}`}
           >
             <div className="flex flex-col">
-              <span className="text-[10px] opacity-60 uppercase tracking-tighter mb-0.5">
-                {h.status === 'livre' ? 'Disponível' : 'Bloqueado'}
+              <span className="text-[9px] opacity-60 uppercase tracking-tighter mb-1">
+                {h.status === 'livre' ? 'Livre' : 'Ocupado'}
               </span>
               <span className="text-sm font-mono">{h.hora_inicio.slice(0, 5)}</span>
             </div>
