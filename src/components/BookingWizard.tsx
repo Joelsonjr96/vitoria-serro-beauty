@@ -27,15 +27,52 @@ export default function BookingWizard({
   });
   const [loading, setLoading] = useState(false);
 
-  // Agrupar horários por data
+  // Agrupar horários por data e filtrar os que cabem o serviço
   const horariosPorData = useMemo(() => {
     const groups: Record<string, HorarioDisponivel[]> = {};
-    horarios.forEach((h) => {
-      if (!groups[h.data]) groups[h.data] = [];
-      groups[h.data].push(h);
+
+    // Sort schedules by time
+    const sortedHorarios = [...horarios].sort((a, b) =>
+      `${a.data}T${a.hora_inicio}`.localeCompare(`${b.data}T${b.hora_inicio}`)
+    );
+
+    const SLOTS_NEEDED = Math.ceil(servico.duracao_minutos / 30);
+
+    sortedHorarios.forEach((h, index) => {
+      if (h.status !== 'livre') return;
+
+      // Check if there are enough consecutive free slots
+      let isPossible = true;
+      for (let i = 0; i < SLOTS_NEEDED; i++) {
+        const nextSlot = sortedHorarios[index + i];
+
+        // Slot must exist, be on the same day, and be free
+        if (!nextSlot || nextSlot.data !== h.data || nextSlot.status !== 'livre') {
+          isPossible = false;
+          break;
+        }
+
+        // Optional: verify they are indeed consecutive (30 min gaps)
+        if (i > 0) {
+          const prevSlot = sortedHorarios[index + i - 1];
+          const prevTime = new Date(`2000-01-01T${prevSlot.hora_inicio}`);
+          const currTime = new Date(`2000-01-01T${nextSlot.hora_inicio}`);
+          const diffMinutes = (currTime.getTime() - prevTime.getTime()) / (1000 * 60);
+
+          if (diffMinutes !== 30) {
+            isPossible = false;
+            break;
+          }
+        }
+      }
+
+      if (isPossible) {
+        if (!groups[h.data]) groups[h.data] = [];
+        groups[h.data].push(h);
+      }
     });
     return groups;
-  }, [horarios]);
+  }, [horarios, servico.duracao_minutos]);
 
   const datasDisponiveis = useMemo(() => Object.keys(horariosPorData).sort(), [horariosPorData]);
 
@@ -54,6 +91,7 @@ export default function BookingWizard({
           nome_cliente: nome,
           telefone_cliente: telefone,
           anamnese: anamnese, // Enviando os dados da anamnese
+          duracao_minutos: servico.duracao_minutos, // Enviando a duração para bloquear os slots corretos
         }),
       });
 

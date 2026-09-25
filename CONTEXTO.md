@@ -70,7 +70,7 @@ pronta, aplicar:
 - Copy direta e específica, sem clichês de marketing genérico
   ("experiência única", "solução completa", etc.).
 
-## Forma de trabalho esperada do Claude Code
+## Metodologia de Desenvolvimento
 Construir em fatias pequenas, uma de cada vez, na ordem:
 1. Estrutura do projeto + lista de serviços
 2. Tela de horários disponíveis por serviço

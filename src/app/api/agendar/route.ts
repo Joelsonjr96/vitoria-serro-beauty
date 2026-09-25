@@ -37,14 +37,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Atualiza o status do horário para ocupado
-    const { error: updateError } = await supabase
-      .from('horarios_disponiveis')
-      .update({ status: 'ocupado' })
-      .eq('id', body.horario_id);
+    // Atualiza os horários necessários para ocupado
+    const slotsNeeded = Math.ceil(body.duracao_minutos / 30);
 
-    if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    // Busca o horário inicial para encontrar os subsequentes
+    const { data: startHorario } = await supabase
+      .from('horarios_disponiveis')
+      .select('data, hora_inicio')
+      .eq('id', body.horario_id)
+      .single();
+
+    if (startHorario) {
+      // Busca todos os horários do mesmo dia a partir do horário de início
+      const { data: candidateSlots } = await supabase
+        .from('horarios_disponiveis')
+        .select('id, hora_inicio')
+        .eq('data', startHorario.data)
+        .gte('hora_inicio', startHorario.hora_inicio)
+        .order('hora_inicio', { ascending: true })
+        .limit(slotsNeeded);
+
+      if (candidateSlots && candidateSlots.length > 0) {
+        const idsToUpdate = candidateSlots.map(s => s.id);
+
+        const { error: updateError } = await supabase
+          .from('horarios_disponiveis')
+          .update({ status: 'ocupado' })
+          .in('id', idsToUpdate);
+
+        if (updateError) {
+          return NextResponse.json({ error: updateError.message }, { status: 500 });
+        }
+      }
     }
 
     return NextResponse.json({ message: 'Agendamento realizado com sucesso!', data: agendamento }, { status: 201 });
