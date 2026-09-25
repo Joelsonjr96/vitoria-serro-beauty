@@ -6,6 +6,7 @@ import CRMManager from '@/components/CRMManager';
 import NovoAgendamento from '@/components/NovoAgendamento';
 import AgendamentoCard from '@/components/AgendamentoCard';
 import SafeImage from '@/components/SafeImage';
+import LogoutButton from '@/components/LogoutButton';
 import { supabase } from '@/lib/supabase';
 import { Agendamento, Servico } from '@/types';
 
@@ -97,6 +98,7 @@ export default async function ProfPage() {
               <h1 className="text-3xl font-serif text-text-main">Minha Agenda</h1>
               <p className="text-text-muted text-sm font-medium italic">Painel Administrativo Vitória Serro Beauty</p>
             </div>
+            <LogoutButton />
           </div>
 
           {/* DASHBOARD RÁPIDO */}
