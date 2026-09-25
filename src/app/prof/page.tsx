@@ -163,7 +163,7 @@ export default async function ProfPage() {
             {/* Nova Seção: CRM */}
             <div className="space-y-6">
               <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted mb-4 flex items-center gap-2">
-                👥 CRM e Clientes
+                👥 Cadastro e Histórico de Clientes
               </h2>
               <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm">
                 <CRMManager agendamentos={agendamentos} />
