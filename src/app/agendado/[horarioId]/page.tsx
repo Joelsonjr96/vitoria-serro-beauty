@@ -106,7 +106,7 @@ export default async function AgendadoPage({
     'Evitar consumir café ou energéticos antes do procedimento (para evitar tremores nos olhos).',
   ];
 
-  const vitoriaWhatsappNumber = '21974084500';
+  const vitoriaWhatsappNumber = '21971162287';
   const dataFormatada = formatarDataBrasileira(horarios_disponiveis.data);
   const diaSemana = dataFormatada.split(',')[0];
   const dataExtenso = dataFormatada.split(',')[1];
