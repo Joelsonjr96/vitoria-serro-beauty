@@ -132,17 +132,17 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
             <>
               <button
                 onClick={() => updateStatus('concluido')}
-                className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors btn-hover-effect"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors btn-hover-effect text-xs font-bold uppercase tracking-widest"
                 title="Concluir Atendimento"
               >
-                ✓
+                ✓ Confirmar
               </button>
               <button
                 onClick={() => updateStatus('cancelado')}
-                className="p-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors btn-hover-effect"
+                className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors btn-hover-effect text-xs font-bold uppercase tracking-widest"
                 title="Cancelar Agendamento"
               >
-                ✕
+                ✕ Cancelar
               </button>
             </>
           )}
