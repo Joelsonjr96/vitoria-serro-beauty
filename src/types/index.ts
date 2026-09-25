@@ -21,6 +21,8 @@ export type Agendamento = {
   telefone_cliente: string;
   anamnese?: {
     alergias?: string;
+    alergiaCosmeticos?: string;
+    usoUnhasGel?: boolean;
     sensibilidade?: boolean;
     gravidez?: boolean;
     observacoes?: string;
