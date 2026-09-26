@@ -112,7 +112,7 @@ export default async function AgendadoPage({
   const dataExtenso = dataFormatada.split(',')[1];
 
   const whatsappConfirmMsg = encodeURIComponent(
-    `Oi Vitória! Sou ${nome_cliente}, agendei ${servicos.nome} para ${diaSemana} (${dataExtenso}) às ${horarios_disponiveis.hora_inicio.slice(0, 5)}. Aqui está meu comprovante!`
+    `Oi Vitória! Sou ${nome_cliente}, agendei ${servicos.nome} para ${diaSemana} (${dataExtenso}) às ${horarios_disponiveis.hora_inicio.slice(0, 5)}.`
   );
 
   return (
