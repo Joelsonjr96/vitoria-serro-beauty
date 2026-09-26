@@ -68,7 +68,7 @@ export default async function Home() {
           {/* Aplicação da Logo: Logo Ouro centralizada */}
           <div className="mb-10 flex justify-center drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
             <SafeImage
-              src="/images/branding/logo-dourada.jpg"
+              src="/images/branding/logo-dourada.png"
               alt="Vitória Serro Beauty Ouro"
               className="h-40 md:h-56 w-auto object-contain"
               width={400}
