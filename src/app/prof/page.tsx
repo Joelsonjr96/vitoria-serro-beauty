@@ -338,7 +338,7 @@ export default function ProfPage() {
               🗓️ Bloqueio de Agenda
             </h2>
             <div className="bg-bg-card p-8 rounded-[28px] border border-accent-lavender shadow-sm sticky top-24">
-              <HorarioManager initialHorarios={horarios.filter(h => h.data > today || (h.data === today && h.hora_inicio >= agora)) || []} />
+              <HorarioManager initialHorarios={horarios.filter(h => h.data > todayStr || (h.data === todayStr && h.hora_inicio >= agora)) || []} />
             </div>
           </section>
         </div>
