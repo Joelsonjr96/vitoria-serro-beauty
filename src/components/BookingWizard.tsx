@@ -188,8 +188,8 @@ export default function BookingWizard({
 
       {/* Modal de Confirmação */}
       {selectedHorario && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-text-main/40 backdrop-blur-sm animate-in">
-          <div className="bg-bg-card w-full max-w-lg shadow-2xl rounded-[20px] overflow-hidden animate-zoom-in">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-text-main/40 backdrop-blur-sm animate-in overflow-y-auto">
+          <div className="bg-bg-card w-full max-w-lg shadow-2xl rounded-[20px] overflow-hidden animate-zoom-in my-auto">
             <div className="p-6 md:p-8">
               <div className="flex justify-between items-start mb-6">
                 <h3 className="text-2xl font-serif text-text-main">Resumo do Agendamento</h3>
