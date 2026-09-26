@@ -114,7 +114,7 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
         </div>
       </div>
 
-      <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:gap-4 border-t md:border-t-0 md:border-l border-accent-lavender/40 pt-4 md:pt-0 md:pl-6">
+      <div className="flex flex-wrap md:flex-col items-center md:items-end gap-3 md:gap-4 border-t md:border-t-0 md:border-l border-accent-lavender/40 pt-4 md:pt-0 md:pl-6">
         <div className="flex flex-row md:flex-col items-center md:items-end gap-1 flex-1">
           <p className="text-xs font-bold uppercase tracking-widest text-text-muted order-2 md:order-1">
             {agendamento.horarios_disponiveis ? formatarDataBrasileira(agendamento.horarios_disponiveis.data).split(',')[0] : '---'}
