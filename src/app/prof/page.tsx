@@ -215,7 +215,7 @@ export default function ProfPage() {
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-amber-800 flex items-center gap-2 mb-3">
                 ⚠️ Atenção
               </h2>
-              <div className="grid md:grid-cols-3 gap-2">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
                 {alertas.map(alerta => (
                   <div key={alerta.id} className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between gap-2">
                     <div className="flex flex-col gap-0.5">
@@ -230,7 +230,7 @@ export default function ProfPage() {
           )}
 
           {/* DASHBOARD RÁPIDO */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2" suppressHydrationWarning>
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-2" suppressHydrationWarning>
             <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
               <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Hoje</p>
               <p className="text-sm font-serif text-text-main">{agendamentosHoje.length}</p>

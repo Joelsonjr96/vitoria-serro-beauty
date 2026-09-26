@@ -88,7 +88,7 @@ export default function HorarioManager({ initialHorarios }: { initialHorarios: H
         </select>
       </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
         {filteredHorarios.map((h) => (
           <button
             key={h.id}
