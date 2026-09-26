@@ -114,7 +114,7 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
         </div>
       </div>
 
-      <div className="flex flex-wrap md:flex-col items-center md:items-end gap-3 md:gap-4 border-t md:border-t-0 md:border-l border-accent-lavender/40 pt-4 md:pt-0 md:pl-6">
+      <div className="flex flex-col items-center md:items-end gap-3 md:gap-4 border-t md:border-t-0 md:border-l border-accent-lavender/40 pt-4 md:pt-0 md:pl-6">
         <div className="flex flex-row md:flex-col items-center md:items-end gap-1 flex-1">
           <p className="text-xs font-bold uppercase tracking-widest text-text-muted order-2 md:order-1">
             {agendamento.horarios_disponiveis ? formatarDataBrasileira(agendamento.horarios_disponiveis.data).split(',')[0] : '---'}
@@ -125,22 +125,22 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
         </div>
 
         {/* Ações Rápidas */}
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full flex-wrap justify-end">
           {status === 'pendente' && (
             <>
-              <button onClick={() => updateStatus('confirmado')} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg border border-emerald-100 transition-colors text-xs font-bold uppercase tracking-widest">✓ Confirmar</button>
-              <button onClick={() => updateStatus('cancelado')} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors text-xs font-bold uppercase tracking-widest">✕ Cancelar</button>
+              <button onClick={() => updateStatus('confirmado')} className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg border border-emerald-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">✓ Confirmar</button>
+              <button onClick={() => updateStatus('cancelado')} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">✕ Cancelar</button>
             </>
           )}
           {status === 'confirmado' && (
             <>
-              <button onClick={() => updateStatus('em_atendimento')} className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg border border-purple-100 transition-colors text-xs font-bold uppercase tracking-widest">▶ Iniciar</button>
-              <button onClick={() => updateStatus('nao_compareceu')} className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-100 transition-colors text-xs font-bold uppercase tracking-widest">! Não Compareceu</button>
-              <button onClick={() => updateStatus('cancelado')} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors text-xs font-bold uppercase tracking-widest">✕ Cancelar</button>
+              <button onClick={() => updateStatus('em_atendimento')} className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg border border-purple-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">▶ Iniciar</button>
+              <button onClick={() => updateStatus('nao_compareceu')} className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">! Não Compareceu</button>
+              <button onClick={() => updateStatus('cancelado')} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">✕ Cancelar</button>
             </>
           )}
           {status === 'em_atendimento' && (
-            <button onClick={() => setShowConcluirModal(true)} className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors text-xs font-bold uppercase tracking-widest">✓ Concluir</button>
+            <button onClick={() => setShowConcluirModal(true)} className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg border border-blue-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">✓ Concluir</button>
           )}
         </div>
 

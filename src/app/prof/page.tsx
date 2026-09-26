@@ -230,7 +230,7 @@ export default function ProfPage() {
           )}
 
           {/* DASHBOARD RÁPIDO */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-2" suppressHydrationWarning>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full" suppressHydrationWarning>
             <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
               <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Hoje</p>
               <p className="text-sm font-serif text-text-main">{agendamentosHoje.length}</p>
