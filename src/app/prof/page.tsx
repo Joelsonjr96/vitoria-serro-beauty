@@ -76,45 +76,49 @@ export default function ProfPage() {
 
   if (loading) return <div className="min-h-screen bg-bg-primary flex items-center justify-center">Carregando...</div>;
 
-  const today = new Date().toISOString().split('T')[0];
+  const getSaoPauloDate = (date: Date = new Date()) => {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Sao_Paulo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    return formatter.format(date);
+  };
+
+  const now = new Date();
+  const today = getSaoPauloDate(now);
   const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-  // Métricas para o Dashboard (calculadas a partir do estado 'agendamentos')
-  const agendamentosHoje = agendamentos.filter(ag => ag.horarios_disponiveis?.data === today);
+  const firstDayOfMonth = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  firstDayOfMonth.setDate(1);
+  const startOfMonth = getSaoPauloDate(firstDayOfMonth);
+
+  const lastDayOfMonth = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  lastDayOfMonth.setMonth(lastDayOfMonth.getMonth() + 1, 0);
+  const endOfMonth = getSaoPauloDate(lastDayOfMonth);
+
+  const datePlus7 = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  datePlus7.setDate(datePlus7.getDate() + 7);
+  const endOfWeek = getSaoPauloDate(datePlus7);
+
+  const isValid = (ag: Agendamento) => ['confirmado', 'concluido'].includes(ag.status || '');
+  const isInRange = (ag: Agendamento, start: string, end: string) => {
+    const data = ag.horarios_disponiveis?.data || '';
+    return data >= start && data <= end;
+  };
+
+  // Métricas para o Dashboard
+  const agendamentosHoje = agendamentos.filter(ag => isValid(ag) && isInRange(ag, today, today));
   const faturamentoHoje = agendamentosHoje.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  const umaSemanaDepois = new Date();
-  umaSemanaDepois.setDate(umaSemanaDepois.getDate() + 7);
-  const umaSemanaDepoisStr = umaSemanaDepois.toISOString().split('T')[0];
-
-  const agendamentosSemana = agendamentos.filter(ag => {
-    const dataAg = ag.horarios_disponiveis?.data || '';
-    return dataAg >= today && dataAg <= umaSemanaDepoisStr;
-  });
+  const agendamentosSemana = agendamentos.filter(ag => isValid(ag) && isInRange(ag, today, endOfWeek));
   const faturamentoSemana = agendamentosSemana.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
-  const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0];
-
-  const agendamentosMes = agendamentos.filter(ag => {
-    const dataAg = ag.horarios_disponiveis?.data || '';
-    if (!dataAg) return false;
-
-    const dataAgDate = new Date(dataAg);
-    // Ajuste: O problema anterior pode ser a comparação direta de getDate()
-    // com startDay e endDay que eram derivados de Date(startOfMonth).getDate()
-    // A lógica correta é apenas comparar ano e mês.
-
-    const mesAg = dataAgDate.getMonth();
-    const anoAg = dataAgDate.getFullYear();
-    const mesAtual = new Date().getMonth();
-    const anoAtual = new Date().getFullYear();
-
-    return mesAg === mesAtual && anoAg === anoAtual;
-  });
+  const agendamentosMes = agendamentos.filter(ag => isValid(ag) && isInRange(ag, startOfMonth, endOfMonth));
   const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  const agendamentosConfirmados = agendamentos.filter(ag => ag.status === 'confirmado' && (ag.horarios_disponiveis?.data || '') >= today);
+  const agendamentosConfirmados = agendamentos.filter(ag => isValid(ag) && (ag.horarios_disponiveis?.data || '') >= today);
   const faturamentoConfirmados = agendamentosConfirmados.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
   const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
