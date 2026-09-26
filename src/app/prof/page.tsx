@@ -76,8 +76,14 @@ export default function ProfPage() {
 
   if (loading) return <div className="min-h-screen bg-bg-primary flex items-center justify-center">Carregando...</div>;
 
-  // Definição dos status permitidos conforme instrução do usuário (ajustado para português do banco)
-  const VALID_STATUS = ['confirmado', 'concluido'];
+  // 1. Status permitidos
+  const VALID_STATUS = ['confirmado', 'concluido', 'confirmed', 'completed'];
+
+  // 2. Garante a unicidade dos agendamentos
+  const agendamentosValidos = agendamentos.filter(ag =>
+    VALID_STATUS.includes((ag.status || '').toLowerCase())
+  );
+  const uniqueAgendamentos = new Map(agendamentosValidos.map(ag => [ag.id, ag]));
 
   // Helper para datas no fuso correto
   const getSaoPauloDate = (date: Date = new Date()) => {
@@ -106,31 +112,45 @@ export default function ProfPage() {
   datePlus7.setDate(datePlus7.getDate() + 7);
   const endOfWeekStr = getSaoPauloDate(datePlus7);
 
-  // Filtragem de dados usando Map para garantir unicidade (COUNT DISTINCT)
-  const agendamentosValidos = agendamentos.filter(ag => VALID_STATUS.includes(ag.status || ''));
-  const uniqueAgendamentos = new Map(agendamentosValidos.map(ag => [ag.id, ag]));
+  // Cálculo de datas adicionais
+  const startOfWeek = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  const day = startOfWeek.getDay();
+  const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Ajuste para segunda-feira
+  startOfWeek.setDate(diff);
+  const startOfWeekStr = getSaoPauloDate(startOfWeek);
 
-  // Função centralizada para calcular estatísticas
-  const calculateStats = (startDate: string, endDate: string) => {
+  // 3. Função de cálculo corrigida
+  const calculateStats = (startDateStr: string, endDateStr: string) => {
     let count = 0;
     let total = 0;
 
     for (const ag of uniqueAgendamentos.values()) {
-        const data = ag.horarios_disponiveis?.data;
-        if (data && data >= startDate && data <= endDate) {
-            count++;
-            total += Number(ag.servicos?.preco || 0);
+      // Trata a data do agendamento para pegar apenas os primeiros 10 caracteres (YYYY-MM-DD)
+      const rawData = ag.horarios_disponiveis?.data || (ag as any).data;
+      const agDataStr = rawData ? String(rawData).slice(0, 10) : null;
+
+      if (agDataStr && agDataStr >= startDateStr && agDataStr <= endDateStr) {
+        count++;
+
+        // CORREÇÃO DO VALOR
+        let valorAgendamento = Number((ag as any).valor_total || (ag as any).preco || (ag as any).total || 0);
+
+        if (!valorAgendamento && Array.isArray((ag as any).servicos)) {
+          valorAgendamento = (ag as any).servicos.reduce((sum: number, s: any) => sum + Number(s.preco || 0), 0);
+        } else if (!valorAgendamento && ag.servicos?.preco) {
+          valorAgendamento = Number(ag.servicos.preco);
         }
+
+        total += valorAgendamento;
+      }
     }
     return { count, total };
   };
 
-  // Métricas do Painel
+  // 4. Aplicação das métricas
   const statsHoje = calculateStats(todayStr, todayStr);
-  const statsSemana = calculateStats(todayStr, endOfWeekStr);
+  const statsSemana = calculateStats(startOfWeekStr, endOfWeekStr);
   const statsMes = calculateStats(startOfMonthStr, endOfMonthStr);
-
-  // Para confirmados, consideramos de hoje em diante
   const statsConfirmados = calculateStats(todayStr, '9999-12-31');
 
   // Pendentes são um caso à parte
