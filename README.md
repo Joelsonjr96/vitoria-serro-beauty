@@ -1,39 +1,93 @@
-# CRM de agendamento personalizado - Vitória Serro Beauty
+# CRM de Agendamento - Vitória Serro Beauty
 
-Este é o CRM de agendamento personalizado desenvolvido para o estúdio **Vitória Serro Beauty**. Este projeto nasce como uma solução para otimizar o fluxo de agendamentos, substituindo o uso de cadernos e organização manual via WhatsApp por um sistema digital, intuitivo e eficiente.
+## O que é este projeto
 
-## 🎯 Objetivo
-Otimizar a gestão de horários do estúdio, proporcionando uma experiência superior para a cliente e maior controle para a profissional, focando em usabilidade mobile e estabilidade.
+CRM de agendamento personalizado desenvolvido para o estúdio **Vitória Serro Beauty**, um Lash Designer em Penha, Rio de Janeiro. Substitui o uso de cadernos manuais e WhatsApp para gerenciar agendamentos, eliminando perda de horários, esquecimento de compromissos e retrabalho da profissional.
 
-## ✨ Funcionalidades Principais
-- **Fluxo de Agendamento Inteligente:** Wizard em 3 etapas para cliente (Escolha do Serviço -> Seleção de Data e Horário -> Cadastro de Dados e Anamnese).
-- **Painel Profissional Aprimorado:** Dashboard acionável com área de "Atenção" (alertas sobre confirmações, clientes inativos e horários), métricas de faturamento e fluxo de gestão de atendimentos.
-- **Máquina de Estados de Atendimento:** Ciclo completo de status (`Pendente` → `Confirmado` → `Em Atendimento` → `Concluído`) com suporte a fluxos de `Cancelamento` e `Não Compareceu`.
-- **Fluxo de Conclusão de Atendimento:** Registro estruturado de atendimentos com observações, atualização automática de histórico e métricas.
-- **Responsividade Total:** Interface adaptada para uso fluido em dispositivos móveis e desktops, com áreas de toque otimizadas para smartphones.
-- **PWA (Progressive Web App):** Instalável como aplicativo nativo no celular.
+## O problema
 
-## 🛠️ Tecnologias
-- **Framework:** Next.js (App Router)
-- **Banco de Dados:** Supabase (PostgreSQL) com transações atômicas para garantia de consistência.
-- **Estilização:** Tailwind CSS (seguindo diretrizes de design luxuoso/sóbrio).
-- **Testes:** Playwright para automação de testes de fluxo.
+Antes deste sistema, o estúdio operava com:
+- Agendamentos feitos via WhatsApp (sem rastreamento centralizado)
+- Cadernos físicos para registro
+- Perda frequente de horários disponíveis
+- Esquecimento de confirmações por parte dos clientes
+- Retrabalho constante da profissional para marcar e bloquear horários
 
-## 🚀 Como rodar localmente
-1. **Instale as dependências:**
+## Solução
+
+A aplicação permite aos clientes escolher serviços e horários, confirmar agendamentos e à profissional visualizar sua agenda diária com bloqueio de horários. Focado em um piloto de execução com escopo restrito:
+
+### Funcionalidades (piloto)
+
+- **Fluxo de Agendamento Inteligente** – Wizard em 3 etapas para o cliente:
+  1. Escolha do serviço
+  2. Seleção de data e horário
+  3. Cadastro de dados e anamnese
+
+- **Painel Profissional** – Dashboard com:
+  - Alertas de confirmações, clientes inativos e horários livres
+  - Métricas de faturamento
+  - Fluxo de gestão de atendimentos
+
+- **Máquina de Estados de Atendimento** – Ciclo completo (`Pendente` → `Confirmado` → `Em Atendimento` → `Concluído`) com suporte a fluxos de `Cancelamento` e `Não Compareceu`
+
+- **Fluxo de Conclusão de Atendimento** – Registro estruturado de atendimentos com observações e atualização automática de histórico
+
+- **Responsividade Total** – Interface otimizada para uso em dispositivos móveis e desktops
+
+## Stack Tecnológico
+
+- **Frontend & Backend** – Next.js (App Router)
+- **Banco de Dados** – Supabase (PostgreSQL) com transações atômicas
+- **Estilização** – Tailwind CSS (cores sólidas, tipografia sobreduzida)
+- **Testes** – Playwright (automação de fluxos)
+
+## Escopo (Piloto)
+
+Este é um **piloto de execução** do Projeto de Extensão V (Curso ADS - Descomplica). O sistema é uma versão funcional do CRM, mas **fora desse escopo** não há implementação de:
+
+- Login/cadastro de clientes
+- Histórico de atendimentos
+- Notificações automáticas (WhatsApp/SMS/e-mail)
+- Múltiplos profissionais ou múltiplas agendas
+- Pagamento online
+- Painel administrativo com relatórios/gráficos
+
+Qualquer funcionalidade além do escopo definido deve ser solicitada antes da implementação.
+
+## Como rodar localmente
+
+1. Instale as dependências:
    ```bash
    npm install
    ```
-2. **Inicie o servidor de desenvolvimento:**
+
+2. Inicie o servidor de desenvolvimento:
    ```bash
    npm run dev
    ```
-3. **Acesse:** [http://localhost:3000](http://localhost:3000)
 
-## 📖 Documentação
-Para detalhes técnicos, história do projeto, regras de negócio e estrutura de pastas, consulte:
-- `DOCUMENTACAO_PROJETO.md`: Visão geral e funcionalidades.
-- `CONTEXTO.md`: Requisitos de escopo e diretrizes obrigatórias.
+3. Acesse a aplicação:
+   [http://localhost:3000](http://localhost:3000)
+
+## Design e Experiência
+
+A interface segue diretrizes obrigatórias:
+- Sem gradientes decorativos sem função clara
+- CTAs apenas onde há ação real (ex.: "Confirmar agendamento")
+- Tipografia sobreduzida e consistente (sem serifas premium)
+- Sem seções artificiais para parecer "completo"
+- Copy direta e específica, sem clichês de marketing genérico
+
+## Documentação
+
+- **[Histórico](docs/historico.md)** – Histórico de implementações e decisões técnicas
+- **[Contexto de Negócio](docs/contesto_negocio.md)** – Regras de negócio e escopo do projeto
+- **[Arquitetura](docs/arquitetura.md)** – Decisões técnicas e estrutura de pastas
+
+## Status
+
+O projeto está estável. O build de produção passa 100% e está pronto para uso pela cliente final (teste com usuária real previsto para 27/11).
 
 ---
 *Projeto desenvolvido como parte do Projeto de Extensão V (Curso ADS - Descomplica).*
