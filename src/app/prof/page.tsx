@@ -76,6 +76,10 @@ export default function ProfPage() {
 
   if (loading) return <div className="min-h-screen bg-bg-primary flex items-center justify-center">Carregando...</div>;
 
+  // Definição dos status permitidos conforme instrução do usuário (ajustado para português do banco)
+  const VALID_STATUS = ['confirmado', 'concluido'];
+
+  // Helper para datas no fuso correto
   const getSaoPauloDate = (date: Date = new Date()) => {
     const formatter = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'America/Sao_Paulo',
@@ -87,47 +91,58 @@ export default function ProfPage() {
   };
 
   const now = new Date();
-  const today = getSaoPauloDate(now);
-  const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
+  const todayStr = getSaoPauloDate(now);
+  const agora = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false });
 
   const firstDayOfMonth = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
   firstDayOfMonth.setDate(1);
-  const startOfMonth = getSaoPauloDate(firstDayOfMonth);
+  const startOfMonthStr = getSaoPauloDate(firstDayOfMonth);
 
   const lastDayOfMonth = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
   lastDayOfMonth.setMonth(lastDayOfMonth.getMonth() + 1, 0);
-  const endOfMonth = getSaoPauloDate(lastDayOfMonth);
+  const endOfMonthStr = getSaoPauloDate(lastDayOfMonth);
 
   const datePlus7 = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
   datePlus7.setDate(datePlus7.getDate() + 7);
-  const endOfWeek = getSaoPauloDate(datePlus7);
+  const endOfWeekStr = getSaoPauloDate(datePlus7);
 
-  const isValid = (ag: Agendamento) => ['confirmado', 'concluido'].includes(ag.status || '');
-  const isInRange = (ag: Agendamento, start: string, end: string) => {
-    const data = ag.horarios_disponiveis?.data || '';
-    return data >= start && data <= end;
+  // Filtragem de dados usando Map para garantir unicidade (COUNT DISTINCT)
+  const agendamentosValidos = agendamentos.filter(ag => VALID_STATUS.includes(ag.status || ''));
+  const uniqueAgendamentos = new Map(agendamentosValidos.map(ag => [ag.id, ag]));
+
+  // Função centralizada para calcular estatísticas
+  const calculateStats = (startDate: string, endDate: string) => {
+    let count = 0;
+    let total = 0;
+
+    for (const ag of uniqueAgendamentos.values()) {
+        const data = ag.horarios_disponiveis?.data;
+        if (data && data >= startDate && data <= endDate) {
+            count++;
+            total += Number(ag.servicos?.preco || 0);
+        }
+    }
+    return { count, total };
   };
 
-  // Métricas para o Dashboard
-  const agendamentosHoje = agendamentos.filter(ag => isValid(ag) && isInRange(ag, today, today));
-  const faturamentoHoje = agendamentosHoje.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+  // Métricas do Painel
+  const statsHoje = calculateStats(todayStr, todayStr);
+  const statsSemana = calculateStats(todayStr, endOfWeekStr);
+  const statsMes = calculateStats(startOfMonthStr, endOfMonthStr);
 
-  const agendamentosSemana = agendamentos.filter(ag => isValid(ag) && isInRange(ag, today, endOfWeek));
-  const faturamentoSemana = agendamentosSemana.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+  // Para confirmados, consideramos de hoje em diante
+  const statsConfirmados = calculateStats(todayStr, '9999-12-31');
 
-  const agendamentosMes = agendamentos.filter(ag => isValid(ag) && isInRange(ag, startOfMonth, endOfMonth));
-  const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
-
-  const agendamentosConfirmados = agendamentos.filter(ag => isValid(ag) && (ag.horarios_disponiveis?.data || '') >= today);
-  const faturamentoConfirmados = agendamentosConfirmados.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
-
+  // Pendentes são um caso à parte
   const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
   const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
-  const proximaCliente = agendamentosHoje
+
+  const proximaCliente = Array.from(uniqueAgendamentos.values())
     .filter(ag => {
-      const hora = ag.horarios_disponiveis?.hora_inicio;
-      return hora && hora >= agora && ag.status === 'confirmado';
+        const data = ag.horarios_disponiveis?.data;
+        const hora = ag.horarios_disponiveis?.hora_inicio;
+        return data === todayStr && hora && hora >= agora && ag.status === 'confirmado';
     })
     .sort((a, b) => (a.horarios_disponiveis?.hora_inicio || '').localeCompare(b.horarios_disponiveis?.hora_inicio || ''))[0];
 
@@ -237,26 +252,26 @@ export default function ProfPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full" suppressHydrationWarning>
             <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
               <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Hoje</p>
-              <p className="text-sm font-serif text-text-main">{agendamentosHoje.length}</p>
-              <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoHoje.toFixed(2)}</p>
+              <p className="text-sm font-serif text-text-main">{statsHoje.count}</p>
+              <p className="text-[10px] font-medium text-emerald-700">R$ {statsHoje.total.toFixed(2)}</p>
             </div>
 
             <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
               <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Semana</p>
-              <p className="text-sm font-serif text-text-main">{agendamentosSemana.length}</p>
-              <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoSemana.toFixed(2)}</p>
+              <p className="text-sm font-serif text-text-main">{statsSemana.count}</p>
+              <p className="text-[10px] font-medium text-emerald-700">R$ {statsSemana.total.toFixed(2)}</p>
             </div>
 
             <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
               <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Mês</p>
-              <p className="text-sm font-serif text-text-main">{agendamentosMes.length}</p>
-              <p className="text-[10px] font-medium text-emerald-700">R$ {faturamentoMes.toFixed(2)}</p>
+              <p className="text-sm font-serif text-text-main">{statsMes.count}</p>
+              <p className="text-[10px] font-medium text-emerald-700">R$ {statsMes.total.toFixed(2)}</p>
             </div>
 
             <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
               <p className="text-[9px] uppercase tracking-widest text-text-muted font-bold mb-0.5">Confirmados</p>
-              <p className="text-sm font-serif text-text-main">{agendamentosConfirmados.length}</p>
-              <p className="text-[10px] font-medium text-button-bg">R$ {faturamentoConfirmados.toFixed(2)}</p>
+              <p className="text-sm font-serif text-text-main">{statsConfirmados.count}</p>
+              <p className="text-[10px] font-medium text-button-bg">R$ {statsConfirmados.total.toFixed(2)}</p>
             </div>
 
             <div className="bg-bg-card border border-accent-lavender px-3 py-2 rounded-lg shadow-sm">
