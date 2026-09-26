@@ -189,7 +189,7 @@ export default function ProfPage() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-bg-primary p-6 md:p-12 font-sans text-text-main" suppressHydrationWarning>
-        <header className="max-w-6xl mx-auto mb-8 flex flex-col gap-4">
+        <header className="max-w-4xl mx-auto mb-8 flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4 border-b border-accent-lavender pb-4">
             <div className="flex items-center gap-4">
               <div className="bg-white p-1 rounded-lg shadow-sm border border-accent-lavender/30">
@@ -265,7 +265,7 @@ export default function ProfPage() {
 
         {/* PRÓXIMA CLIENTE ALERTA */}
         {proximaCliente && (
-          <div className="max-w-6xl mx-auto mb-8 bg-bg-lavender-soft border border-button-bg/30 p-4 rounded-[16px] flex items-center gap-4 animate-in">
+          <div className="max-w-4xl mx-auto mb-8 bg-bg-lavender-soft border border-button-bg/30 p-4 rounded-[16px] flex items-center gap-4 animate-in">
             <span className="text-2xl animate-pulse">⏳</span>
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-button-bg">Próxima Cliente agora</p>
@@ -276,7 +276,7 @@ export default function ProfPage() {
           </div>
         )}
 
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+        <div className="max-w-4xl mx-auto grid lg:grid-cols-3 gap-8">
           {/* Coluna de Agendamentos */}
           <section className="lg:col-span-2 space-y-12">
             <div id="fila-atendimentos" className="space-y-6">
