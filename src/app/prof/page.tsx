@@ -98,13 +98,19 @@ export default function ProfPage() {
 
   const agendamentosMes = agendamentos.filter(ag => {
     const dataAg = ag.horarios_disponiveis?.data || '';
-    const startDay = new Date(startOfMonth).getDate();
-    const endDay = new Date(endOfMonth).getDate();
+    if (!dataAg) return false;
+
     const dataAgDate = new Date(dataAg);
-    return dataAgDate.getFullYear() === new Date(startOfMonth).getFullYear() &&
-           dataAgDate.getMonth() === new Date(startOfMonth).getMonth() &&
-           dataAgDate.getDate() >= startDay &&
-           dataAgDate.getDate() <= endDay;
+    // Ajuste: O problema anterior pode ser a comparação direta de getDate()
+    // com startDay e endDay que eram derivados de Date(startOfMonth).getDate()
+    // A lógica correta é apenas comparar ano e mês.
+
+    const mesAg = dataAgDate.getMonth();
+    const anoAg = dataAgDate.getFullYear();
+    const mesAtual = new Date().getMonth();
+    const anoAtual = new Date().getFullYear();
+
+    return mesAg === mesAtual && anoAg === anoAtual;
   });
   const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
