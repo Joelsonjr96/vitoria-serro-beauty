@@ -4,23 +4,6 @@
 
 O CRM de agendamento é construído como uma única aplicação Next.js (App Router) que combina frontend e backend, usando Supabase como banco de dados gerenciado. A aplicação é deployada na Vercel e funciona como PWA instalável.
 
-## Estrutura de Pastas
-
-```
-VITORIA/
-├── src/
-│   ├── app/           # Rotas e páginas (Next.js App Router)
-│   │   ├── api/       # Endpoints API route handlers
-│   │   ├── (routes)/  # Layouts e páginas principais
-│   │   └── ...
-│   ├── components/    # Componentes React reutilizáveis
-│   ├── lib/          # Configurações de bibliotecas (Supabase)
-│   ├── types/        # Definições TypeScript
-│   └── data/         # Dados estáticos (curriculo.json)
-├── public/           # Assets estáticos e imagens
-├── tests/            # Suíte de testes Playwright
-└── docs/            # Esta documentação
-```
 
 ## Fluxo de Dados
 
@@ -31,16 +14,6 @@ VITORIA/
 3. **Em Atendimento** → profissional conclui → status muda para `Concluído`
 4. **Cancelamento/No Show** → status altera, horário é liberado automaticamente
 
-## Stack Técnico
-
-| Camada | Tecnologia |
-|--------|------------|
-| Framework | Next.js 15 (App Router) |
-| Banco | Supabase (PostgreSQL + Realtime) |
-| Frontend | Tailwind CSS + shadcn/ui |
-| Estado | React Server Components + Supabase Realtime |
-| Testes | Playwright |
-| Deploy | Vercel (CDN global) |
 
 ## Decisões Arquiteturais
 

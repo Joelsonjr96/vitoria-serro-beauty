@@ -81,8 +81,7 @@ A interface segue diretrizes obrigatórias:
 
 ## Documentação
 
-- **[Histórico](docs/historico.md)** – Histórico de implementações e decisões técnicas
-- **[Contexto de Negócio](docs/contesto_negocio.md)** – Regras de negócio e escopo do projeto
+- **[Contexto de Negócio](docs/contesto_negocio.md)** – Escopo, entidades e regras de negócio
 - **[Arquitetura](docs/arquitetura.md)** – Decisões técnicas e estrutura de pastas
 - **[Roteiro de Evolução](docs/ROTEIRO_CRM.md)** – Plano de evolução do projeto para um CRM completo
 

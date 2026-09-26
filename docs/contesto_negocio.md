@@ -47,28 +47,6 @@ perguntada antes de ser implementada, não implementada por padrão.
   (ex.: serviço de 90 min bloqueia 3 slots de 30 min).
 - Agendamento cancelado libera o horário de volta.
 
-## Stack
-- Next.js (front-end e back-end no mesmo projeto)
-- Supabase (Postgres gerenciado) como banco de dados
-- Deploy em Vercel (link acessível por celular para o teste com a
-  usuária)
-
-## Diretrizes de design e copy (obrigatórias)
-Este projeto segue diretrizes específicas para não parecer uma
-interface genérica gerada por IA. Antes de considerar qualquer tela
-pronta, aplicar:
-- Sem gradientes decorativos sem função clara; priorizar cores
-  sólidas e contraste.
-- CTAs só onde há ação real (ex.: "Confirmar agendamento"), não em
-  todo bloco.
-- Favicon, título de página e metadados básicos configurados.
-- Tipografia sóbria e consistente, sem serifada "premium" sem motivo.
-- Nenhuma prova social inventada (este projeto não usa prova social).
-- Sem seções artificiais só para parecer "completo" — a tela é
-  utilitária, feita para uma profissional e clientes reais usarem no
-  dia a dia, não uma landing page de vendas.
-- Copy direta e específica, sem clichês de marketing genérico
-  ("experiência única", "solução completa", etc.).
 
 ## Metodologia de Desenvolvimento
 Construir em fatias pequenas, uma de cada vez, na ordem:
