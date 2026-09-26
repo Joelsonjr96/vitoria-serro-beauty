@@ -10,7 +10,7 @@ export type HorarioDisponivel = {
   data: string;
   hora_inicio: string;
   hora_fim: string;
-  status: 'livre' | 'ocupado';
+  status: 'livre' | 'ocupado' | 'bloqueado';
 };
 
 export type Agendamento = {

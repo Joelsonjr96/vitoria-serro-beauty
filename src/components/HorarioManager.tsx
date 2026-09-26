@@ -24,7 +24,7 @@ export default function HorarioManager({ initialHorarios }: { initialHorarios: H
 
   const toggleStatus = async (id: string, currentStatus: string) => {
     setLoadingId(id);
-    const newStatus = currentStatus === 'livre' ? 'ocupado' : 'livre';
+    const newStatus = currentStatus === 'livre' ? 'bloqueado' : 'livre';
 
     const { error } = await supabase
       .from('horarios_disponiveis')
@@ -40,7 +40,7 @@ export default function HorarioManager({ initialHorarios }: { initialHorarios: H
   };
 
   const isDayFullyBlocked = useMemo(() => {
-    return filteredHorarios.length > 0 && filteredHorarios.every(h => h.status === 'ocupado');
+    return filteredHorarios.length > 0 && filteredHorarios.every(h => h.status === 'bloqueado' || h.status === 'ocupado');
   }, [filteredHorarios]);
 
   const toggleDayStatus = async () => {
@@ -97,12 +97,14 @@ export default function HorarioManager({ initialHorarios }: { initialHorarios: H
             className={`py-4 px-3 text-xs font-bold rounded-[12px] transition-all border shadow-sm ${
               h.status === 'livre'
                 ? 'bg-white text-text-main border-accent-lavender hover:border-button-bg'
-                : 'bg-accent-soft/40 text-text-main border-accent-soft/60 hover:bg-accent-soft/60'
+                : h.status === 'bloqueado'
+                ? 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
+                : 'bg-red-50 text-red-800 border-red-300 hover:bg-red-100'
             } ${loadingId === h.id ? 'animate-pulse opacity-50' : ''}`}
           >
             <div className="flex flex-col">
               <span className="text-[9px] opacity-60 uppercase tracking-tighter mb-1">
-                {h.status === 'livre' ? 'Livre' : 'Ocupado'}
+                {h.status === 'livre' ? 'Livre' : h.status === 'bloqueado' ? 'Bloqueado' : 'Ocupado'}
               </span>
               <span className="text-sm font-mono">{h.hora_inicio.slice(0, 5)}</span>
             </div>
@@ -115,7 +117,7 @@ export default function HorarioManager({ initialHorarios }: { initialHorarios: H
         disabled={massLoading || filteredHorarios.length === 0}
         className={`w-full py-4 border-2 text-[10px] font-bold uppercase tracking-[0.2em] rounded-[14px] transition-all disabled:opacity-30 flex items-center justify-center gap-2 shadow-sm btn-hover-effect ${
           isDayFullyBlocked
-            ? 'border-emerald-500/40 text-emerald-600 bg-white hover:bg-emerald-500 hover:text-white'
+            ? 'border-amber-500/40 text-amber-600 bg-white hover:bg-amber-500 hover:text-white'
             : 'border-button-bg/40 text-button-bg bg-white hover:bg-button-bg hover:text-white'
         }`}
       >
