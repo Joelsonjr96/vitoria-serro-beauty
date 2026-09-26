@@ -3,8 +3,8 @@ import SafeImage from "./SafeImage";
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-brand-purple-dark bg-brand-purple-dark py-16 mt-20 text-white">
-      <div className="w-full px-6 grid md:grid-cols-3 gap-12 text-center md:text-left">
+    <footer className="w-full border-t border-brand-purple-dark bg-brand-purple-dark py-16 mt-20 text-white overflow-hidden">
+      <div className="w-full px-4 md:px-6 grid md:grid-cols-3 gap-6 md:gap-12 text-center md:text-left">
         <div className="flex flex-col items-center md:items-start gap-8">
           <SafeImage
             src="/images/branding/logo-fundo-preto.png"
@@ -46,7 +46,7 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <div className="w-full px-6 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-white/40 uppercase tracking-widest font-medium">
+      <div className="w-full px-4 md:px-6 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-white/40 uppercase tracking-widest font-medium">
         <p>&copy; 2026 Vitória Serro Beauty. Todos os direitos reservados.</p>
         <Link
           href="/prof"
