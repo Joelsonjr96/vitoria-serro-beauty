@@ -98,7 +98,13 @@ export default function ProfPage() {
 
   const agendamentosMes = agendamentos.filter(ag => {
     const dataAg = ag.horarios_disponiveis?.data || '';
-    return dataAg >= startOfMonth && dataAg <= endOfMonth;
+    const startDay = new Date(startOfMonth).getDate();
+    const endDay = new Date(endOfMonth).getDate();
+    const dataAgDate = new Date(dataAg);
+    return dataAgDate.getFullYear() === new Date(startOfMonth).getFullYear() &&
+           dataAgDate.getMonth() === new Date(startOfMonth).getMonth() &&
+           dataAgDate.getDate() >= startDay &&
+           dataAgDate.getDate() <= endDay;
   });
   const faturamentoMes = agendamentosMes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
 
