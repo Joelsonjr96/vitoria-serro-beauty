@@ -3,7 +3,7 @@ import SafeImage from "./SafeImage";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-brand-purple-dark bg-brand-purple-dark py-16 mt-20 text-white">
+    <footer className="w-full border-t border-brand-purple-dark bg-brand-purple-dark py-16 mt-20 text-white">
       <div className="max-w-4xl mx-auto px-6 grid md:grid-cols-3 gap-12 text-center md:text-left">
         <div className="flex flex-col items-center md:items-start gap-8">
           <SafeImage
