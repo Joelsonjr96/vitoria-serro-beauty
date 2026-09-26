@@ -3,8 +3,8 @@ import SafeImage from './SafeImage';
 
 export default function Header() {
   return (
-    <header className="w-full border-b border-accent-lavender bg-bg-card relative z-50">
-      <nav className="w-full px-4 py-4 flex items-center justify-center">
+    <header className="w-full border-b border-accent-lavender bg-bg-card relative z-50 overflow-x-hidden">
+      <nav className="w-full px-4 py-4 flex items-center justify-center max-w-[100vw]">
         <Link href="/" className="transition-opacity hover:opacity-80">
           <SafeImage
             src="/images/branding/logo-preta.png"

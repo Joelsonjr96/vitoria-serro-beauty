@@ -3,8 +3,8 @@ import SafeImage from "./SafeImage";
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-brand-purple-dark bg-brand-purple-dark py-16 mt-20 text-white overflow-hidden">
-      <div className="w-full px-4 md:px-6 grid md:grid-cols-3 gap-6 md:gap-12 text-center md:text-left">
+    <footer className="w-full border-t border-brand-purple-dark bg-brand-purple-dark py-16 mt-20 text-white overflow-hidden max-w-[100vw]">
+      <div className="w-full px-4 md:px-6 grid md:grid-cols-3 gap-6 md:gap-12 text-center md:text-left max-w-[100vw]">
         <div className="flex flex-col items-center md:items-start gap-8">
           <SafeImage
             src="/images/branding/logo-fundo-preto.png"
