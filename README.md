@@ -48,7 +48,6 @@ Este projeto utiliza um stack moderno focado em performance e segurança:
     ```env
     NEXT_PUBLIC_SUPABASE_URL=sua_url_supabase
     NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anonima
-    NEXT_PUBLIC_PROFESSIONAL_PASSWORD=senha_do_painel
     ```
 
 4.  **Execução em modo de desenvolvimento:**
@@ -58,7 +57,7 @@ Este projeto utiliza um stack moderno focado em performance e segurança:
 
 ## 🔐 Observações de Manutenção
 
-*   **Controle Administrativo:** A configuração do sistema e o setup de novos ambientes são restritos, garantindo a dependência necessária para o suporte técnico e a gestão personalizada da plataforma.
+*   **Controle Administrativo:** O acesso profissional é gerenciado via **Supabase Auth**. A configuração do sistema e o setup de novos ambientes são restritos, garantindo a dependência necessária para o suporte técnico e a gestão personalizada da plataforma.
 *   **Versionamento:** As regras de negócio críticas, como funções de banco de dados (`book_appointment`, `move_appointment`, etc.), estão versionadas na pasta `supabase/functions/` para garantir consistência e segurança.
 
 ---
