@@ -1,93 +1,66 @@
-# CRM de Agendamento - Vitória Serro Beauty
+# Vitória Serro Beauty CRM
 
-## O que é este projeto
+Sistema de gestão e agendamento personalizado, desenvolvido especificamente para otimizar o fluxo de atendimento no estúdio **Vitória Serro Beauty**.
 
-CRM de agendamento personalizado desenvolvido para o estúdio **Vitória Serro Beauty**, um Lash Designer em Penha, Rio de Janeiro. Substitui o uso de cadernos manuais e WhatsApp para gerenciar agendamentos, eliminando perda de horários, esquecimento de compromissos e retrabalho da profissional.
+## 🚀 Sobre o Projeto
 
-## O problema
+Este CRM foi desenhado para simplificar a rotina de agendamento de uma *Lash Designer*, equilibrando funcionalidade técnica com uma identidade visual sóbria, elegante e focada na experiência do usuário. O sistema permite o agendamento intuitivo por parte das clientes e um painel administrativo robusto para gestão de horários, faturamento e histórico de anamnese.
 
-Antes deste sistema, o estúdio operava com:
-- Agendamentos feitos via WhatsApp (sem rastreamento centralizado)
-- Cadernos físicos para registro
-- Perda frequente de horários disponíveis
-- Esquecimento de confirmações por parte dos clientes
-- Retrabalho constante da profissional para marcar e bloquear horários
+## ✨ Funcionalidades
 
-## Solução
+### Para a Cliente
+*   **Fluxo de Agendamento Ágil:** Seleção de serviço, data e horário em poucos cliques.
+*   **Ficha de Anamnese:** Coleta de dados essenciais pré-atendimento durante o agendamento.
+*   **Confirmação:** Feedback visual claro após o agendamento.
 
-A aplicação permite aos clientes escolher serviços e horários, confirmar agendamentos e à profissional visualizar sua agenda diária com bloqueio de horários. Focado em um piloto de execução com escopo restrito:
+### Para a Profissional (Painel Administrativo)
+*   **Dashboard de Métricas:** Visualização rápida de atendimentos (hoje, semana, mês) e faturamento.
+*   **Gestão de Agenda:** Bloqueio e liberação de horários de forma manual e segura.
+*   **CRM de Clientes:** Acesso ao histórico e cadastro de clientes para reativação.
+*   **Controle de Status:** Gestão de agendamentos pendentes, confirmados e concluídos.
 
-### Funcionalidades (piloto)
+## 🛠 Tecnologias Utilizadas
 
-- **Fluxo de Agendamento Inteligente** – Wizard em 3 etapas para o cliente:
-  1. Escolha do serviço
-  2. Seleção de data e horário
-  3. Cadastro de dados e anamnese
+Este projeto utiliza um stack moderno focado em performance e segurança:
 
-- **Painel Profissional** – Dashboard com:
-  - Alertas de confirmações, clientes inativos e horários livres
-  - Métricas de faturamento
-  - Fluxo de gestão de atendimentos
+*   **Framework:** [Next.js](https://nextjs.org/) (App Router)
+*   **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+*   **Interface:** [React](https://react.dev/) e [Tailwind CSS](https://tailwindcss.com/)
+*   **Backend & Banco de Dados:** [Supabase](https://supabase.com/) (PostgreSQL, Auth, Database Functions)
 
-- **Máquina de Estados de Atendimento** – Ciclo completo (`Pendente` → `Confirmado` → `Em Atendimento` → `Concluído`) com suporte a fluxos de `Cancelamento` e `Não Compareceu`
+> **Diretrizes de Design:** O sistema segue uma identidade visual rigorosa baseada em cores sólidas, tipografia sóbria e ausência de gradientes decorativos, garantindo um visual limpo e profissional.
 
-- **Fluxo de Conclusão de Atendimento** – Registro estruturado de atendimentos com observações e atualização automática de histórico
+## ⚙️ Configuração do Ambiente
 
-- **Responsividade Total** – Interface otimizada para uso em dispositivos móveis e desktops
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/Joelsonjr96/vitoria-serro-beauty.git
+    cd vitoria-serro-beauty
+    ```
 
-## Stack Tecnológico
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
 
-- **Frontend & Backend** – Next.js (App Router)
-- **Banco de Dados** – Supabase (PostgreSQL) com transações atômicas
-- **Estilização** – Tailwind CSS (cores sólidas, tipografia sobreduzida)
-- **Testes** – Playwright (automação de fluxos)
+3.  **Configuração de Variáveis de Ambiente:**
+    Crie um arquivo `.env.local` na raiz do projeto com as credenciais do Supabase:
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=sua_url_supabase
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anonima
+    NEXT_PUBLIC_PROFESSIONAL_PASSWORD=senha_do_painel
+    ```
 
-## Escopo (Piloto)
+4.  **Execução em modo de desenvolvimento:**
+    ```bash
+    npm run dev
+    ```
 
-Este é um **piloto de execução** do Projeto de Extensão V (Curso ADS - Descomplica). O sistema é uma versão funcional do CRM, mas **fora desse escopo** não há implementação de:
+## 🔐 Observações de Manutenção
 
-- Login/cadastro de clientes
-- Histórico de atendimentos
-- Notificações automáticas (WhatsApp/SMS/e-mail)
-- Múltiplos profissionais ou múltiplas agendas
-- Pagamento online
-- Painel administrativo com relatórios/gráficos
-
-Qualquer funcionalidade além do escopo definido deve ser solicitada antes da implementação.
-
-## Como rodar localmente
-
-1. Instale as dependências:
-   ```bash
-   npm install
-   ```
-
-2. Inicie o servidor de desenvolvimento:
-   ```bash
-   npm run dev
-   ```
-
-3. Acesse a aplicação:
-   [http://localhost:3000](http://localhost:3000)
-
-## Design e Experiência
-
-A interface segue diretrizes obrigatórias:
-- Sem gradientes decorativos sem função clara
-- CTAs apenas onde há ação real (ex.: "Confirmar agendamento")
-- Tipografia sobreduzida e consistente (sem serifas premium)
-- Sem seções artificiais para parecer "completo"
-- Copy direta e específica, sem clichês de marketing genérico
-
-## Documentação
-
-- **[Contexto de Negócio](docs/contesto_negocio.md)** – Escopo, entidades e regras de negócio
-- **[Arquitetura](docs/arquitetura.md)** – Decisões técnicas e estrutura de pastas
-- **[Roteiro de Evolução](docs/ROTEIRO_CRM.md)** – Plano de evolução do projeto para um CRM completo
-
-## Status
-
-O projeto está estável. O build de produção passa 100% e está pronto para uso pela cliente final (teste com usuária real previsto para 27/11).
+*   **Controle Administrativo:** A configuração do sistema e o setup de novos ambientes são restritos, garantindo a dependência necessária para o suporte técnico e a gestão personalizada da plataforma.
+*   **Versionamento:** As regras de negócio críticas, como funções de banco de dados (`book_appointment`, `move_appointment`, etc.), estão versionadas na pasta `supabase/functions/` para garantir consistência e segurança.
 
 ---
-*Projeto desenvolvido como parte do Projeto de Extensão V (Curso ADS - Descomplica).*
+
+*Desenvolvido com foco em excelência para Vitória Serro Beauty.*
