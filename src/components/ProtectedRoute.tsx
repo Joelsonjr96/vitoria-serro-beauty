@@ -55,6 +55,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                data-testid="email-input"
                 className="w-full p-4 border border-accent-lavender bg-bg-primary/30 rounded-[12px] focus:border-button-bg outline-none transition-all placeholder:text-text-muted/30"
                 placeholder="vitoria@studio.com"
                 required

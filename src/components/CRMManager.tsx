@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { formatarTelefone, formatarDataBrasileira } from '@/lib/utils';
-import { Agendamento } from '@/types/allTypes';
+import { Agendamento } from '@/types';
 
 interface Cliente {
   id: string;

@@ -1,19 +1,7 @@
-export type Servico = {
-  id: string;
-  nome: string;
-  duracao_minutos: number;
-  preco: number;
-};
+import { Servico } from './servico';
+import { HorarioDisponivel } from './horario';
 
-export type HorarioDisponivel = {
-  id: string;
-  data: string;
-  hora_inicio: string;
-  hora_fim: string;
-  status: 'livre' | 'ocupado' | 'bloqueado';
-};
-
-export type Agendamento = {
+export interface Agendamento {
   id: string;
   servico_id: string;
   horario_id: string;
@@ -31,4 +19,4 @@ export type Agendamento = {
   criado_em: string;
   servicos?: Servico;
   horarios_disponiveis?: HorarioDisponivel;
-};
+}

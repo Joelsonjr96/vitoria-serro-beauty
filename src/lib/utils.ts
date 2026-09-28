@@ -36,3 +36,48 @@ export function formatarTelefone(telefone: string): string {
   }
   return telefone;
 }
+
+export function getSaoPauloDate(date: Date = new Date()): string {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  return formatter.format(date);
+}
+
+export function calculateMetrics(agendamentos: any[], startDateStr: string, endDateStr: string) {
+  let count = 0;
+  let total = 0;
+
+  for (const ag of agendamentos) {
+    const rawData = ag.horarios_disponiveis?.data || (ag as any).data;
+    const agDataStr = rawData ? String(rawData).slice(0, 10) : null;
+
+    if (agDataStr && agDataStr >= startDateStr && agDataStr <= endDateStr) {
+      count++;
+      total += getAgendamentoValor(ag);
+    }
+  }
+  return { count, total };
+}
+
+export function getAgendamentoValor(agendamento: any): number {
+  let valor = Number(agendamento.valor_total || agendamento.preco || agendamento.total || 0);
+
+  if (!valor && Array.isArray(agendamento.servicos)) {
+    valor = agendamento.servicos.reduce((sum: number, s: any) => sum + Number(s.preco || 0), 0);
+  } else if (!valor && agendamento.servicos?.preco) {
+    valor = Number(agendamento.servicos.preco);
+  }
+  return valor;
+}
+
+export function parseAgendamento(ag: any) {
+  return {
+    ...ag,
+    valor: getAgendamentoValor(ag),
+    servicoNome: ag.servicos?.nome || 'Serviço não definido'
+  };
+}

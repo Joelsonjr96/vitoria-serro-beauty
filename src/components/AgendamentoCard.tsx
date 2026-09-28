@@ -1,15 +1,17 @@
 'use client';
 
-import { Agendamento } from '@/types/allTypes';
+import { Agendamento } from '@/types';
 import { formatarDataBrasileira, formatarTelefone } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { useState } from 'react';
 import ConcluirAtendimentoModal from '@/components/ConcluirAtendimentoModal';
+import RemanejarModal from '@/components/RemanejarModal';
 
 export default function AgendamentoCard({ agendamento }: { agendamento: Agendamento }) {
   const [status, setStatus] = useState(agendamento.status);
   const [loading, setLoading] = useState(false);
   const [showConcluirModal, setShowConcluirModal] = useState(false);
+  const [showRemanejarModal, setShowRemanejarModal] = useState(false);
 
   const updateStatus = async (newStatus: 'confirmado' | 'cancelado' | 'pendente' | 'concluido' | 'em_atendimento' | 'nao_compareceu') => {
     if (newStatus === 'cancelado' && !confirm('Tem certeza que deseja cancelar este agendamento? O horário será liberado.')) return;
@@ -135,6 +137,7 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
           {status === 'confirmado' && (
             <>
               <button onClick={() => updateStatus('em_atendimento')} className="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg border border-purple-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">▶ Iniciar</button>
+              <button onClick={() => setShowRemanejarModal(true)} className="flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg border border-sky-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">📅 Remanejar</button>
               <button onClick={() => updateStatus('nao_compareceu')} className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">! Não Compareceu</button>
               <button onClick={() => updateStatus('cancelado')} className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors text-xs font-bold uppercase tracking-widest whitespace-nowrap">✕ Cancelar</button>
             </>
@@ -148,6 +151,13 @@ export default function AgendamentoCard({ agendamento }: { agendamento: Agendame
           <ConcluirAtendimentoModal
             agendamento={agendamento}
             onClose={() => setShowConcluirModal(false)}
+            onSuccess={() => window.location.reload()}
+          />
+        )}
+        {showRemanejarModal && (
+          <RemanejarModal
+            agendamento={agendamento}
+            onClose={() => setShowRemanejarModal(false)}
             onSuccess={() => window.location.reload()}
           />
         )}

@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HorarioManager from '@/components/HorarioManager';
 import CRMManager from '@/components/CRMManager';
@@ -8,93 +7,21 @@ import NovoAgendamento from '@/components/NovoAgendamento';
 import AgendamentoCard from '@/components/AgendamentoCard';
 import SafeImage from '@/components/SafeImage';
 import LogoutButton from '@/components/LogoutButton';
-import { supabase } from '@/lib/supabase';
-import { Agendamento, Servico, HorarioDisponivel } from '@/types/allTypes';
+import { useDashboardStats } from '@/hooks/useDashboardStats';
+import { useState } from 'react';
+import { getSaoPauloDate, calculateMetrics, parseAgendamento } from '@/lib/utils';
 
 export default function ProfPage() {
-  const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
-  const [horarios, setHorarios] = useState<HorarioDisponivel[]>([]);
-  const [servicos, setServicos] = useState<Servico[]>([]);
-  const [clientes, setClientes] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { agendamentos: rawAgendamentos, horarios, servicos, loading } = useDashboardStats();
+  const [clientes, setClientes] = useState<any[]>([]); // TODO: move to hook
 
-  const fetchData = async () => {
-    const [agendamentosRes, horariosRes, servicosRes, clientesRes] = await Promise.all([
-      supabase
-        .from('agendamentos')
-        .select('*, servicos(nome, preco), horarios_disponiveis(data, hora_inicio)')
-        .neq('status', 'cancelado'),
-      supabase
-        .from('horarios_disponiveis')
-        .select('*')
-        .order('data', { ascending: true })
-        .order('hora_inicio', { ascending: true }),
-      supabase
-        .from('servicos')
-        .select('*')
-        .order('nome', { ascending: true }),
-      supabase
-        .from('clientes')
-        .select('*'),
-    ]);
-
-    const rawList = (agendamentosRes.data as Agendamento[]) || [];
-
-    // Ordenação
-    const sortedAgendamentos = rawList.sort((a, b) => {
-      const dataA = a.horarios_disponiveis?.data || '';
-      const dataB = b.horarios_disponiveis?.data || '';
-      if (dataA !== dataB) return dataA.localeCompare(dataB);
-
-      const horaA = a.horarios_disponiveis?.hora_inicio || '';
-      const horaB = b.horarios_disponiveis?.hora_inicio || '';
-      return horaA.localeCompare(horaB);
-    });
-
-    setAgendamentos(sortedAgendamentos);
-    setHorarios(horariosRes.data || []);
-    setServicos((servicosRes.data as Servico[]) || []);
-    setClientes(clientesRes.data || []);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-
-    // Subscribe to changes
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'agendamentos' }, () => {
-        fetchData();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  const agendamentos = rawAgendamentos.map(parseAgendamento);
 
   if (loading) return <div className="min-h-screen bg-bg-primary flex items-center justify-center">Carregando...</div>;
 
-  // 1. Status permitidos
   const VALID_STATUS = ['confirmado', 'concluido', 'confirmed', 'completed'];
-
-  // 2. Garante a unicidade dos agendamentos
-  const agendamentosValidos = agendamentos.filter(ag =>
-    VALID_STATUS.includes((ag.status || '').toLowerCase())
-  );
-  const uniqueAgendamentos = new Map(agendamentosValidos.map(ag => [ag.id, ag]));
-
-  // Helper para datas no fuso correto
-  const getSaoPauloDate = (date: Date = new Date()) => {
-    const formatter = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'America/Sao_Paulo',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-    return formatter.format(date);
-  };
+  const agendamentosValidos = agendamentos.filter(ag => VALID_STATUS.includes((ag.status || '').toLowerCase()));
+  const uniqueAgendamentos = Array.from(new Map(agendamentosValidos.map(ag => [ag.id, ag])).values());
 
   const now = new Date();
   const todayStr = getSaoPauloDate(now);
@@ -112,50 +39,19 @@ export default function ProfPage() {
   datePlus7.setDate(datePlus7.getDate() + 7);
   const endOfWeekStr = getSaoPauloDate(datePlus7);
 
-  // Cálculo de datas adicionais
   const startOfWeek = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
   const day = startOfWeek.getDay();
-  const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Ajuste para segunda-feira
+  const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
   startOfWeek.setDate(diff);
   const startOfWeekStr = getSaoPauloDate(startOfWeek);
 
-  // 3. Função de cálculo corrigida
-  const calculateStats = (startDateStr: string, endDateStr: string) => {
-    let count = 0;
-    let total = 0;
+  const statsHoje = calculateMetrics(uniqueAgendamentos, todayStr, todayStr);
+  const statsSemana = calculateMetrics(uniqueAgendamentos, startOfWeekStr, endOfWeekStr);
+  const statsMes = calculateMetrics(uniqueAgendamentos, startOfMonthStr, endOfMonthStr);
+  const statsConfirmados = calculateMetrics(uniqueAgendamentos, todayStr, '9999-12-31');
 
-    for (const ag of uniqueAgendamentos.values()) {
-      // Trata a data do agendamento para pegar apenas os primeiros 10 caracteres (YYYY-MM-DD)
-      const rawData = ag.horarios_disponiveis?.data || (ag as any).data;
-      const agDataStr = rawData ? String(rawData).slice(0, 10) : null;
-
-      if (agDataStr && agDataStr >= startDateStr && agDataStr <= endDateStr) {
-        count++;
-
-        // CORREÇÃO DO VALOR
-        let valorAgendamento = Number((ag as any).valor_total || (ag as any).preco || (ag as any).total || 0);
-
-        if (!valorAgendamento && Array.isArray((ag as any).servicos)) {
-          valorAgendamento = (ag as any).servicos.reduce((sum: number, s: any) => sum + Number(s.preco || 0), 0);
-        } else if (!valorAgendamento && ag.servicos?.preco) {
-          valorAgendamento = Number(ag.servicos.preco);
-        }
-
-        total += valorAgendamento;
-      }
-    }
-    return { count, total };
-  };
-
-  // 4. Aplicação das métricas
-  const statsHoje = calculateStats(todayStr, todayStr);
-  const statsSemana = calculateStats(startOfWeekStr, endOfWeekStr);
-  const statsMes = calculateStats(startOfMonthStr, endOfMonthStr);
-  const statsConfirmados = calculateStats(todayStr, '9999-12-31');
-
-  // Pendentes são um caso à parte
   const agendamentosPendentes = agendamentos.filter(ag => ag.status === 'pendente');
-  const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + Number(ag.servicos?.preco || 0), 0);
+  const faturamentoPendentes = agendamentosPendentes.reduce((acc, ag) => acc + (ag as any).valor, 0);
 
 
   const proximaCliente = Array.from(uniqueAgendamentos.values())

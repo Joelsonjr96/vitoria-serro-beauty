@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Agendamento } from '@/types/allTypes';
+import { Agendamento } from '@/types';
 
 interface Props {
   agendamento: Agendamento;

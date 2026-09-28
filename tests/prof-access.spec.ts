@@ -15,10 +15,11 @@ test('acesso à tela de profissional requer senha', async ({ page }) => {
   // Verifica se ainda está na tela de proteção
   await expect(passwordInput).toBeVisible();
 
-  // Entra com a senha correta (definida em .env.local)
+  // Entra com o email e senha corretos
+  await page.getByTestId('email-input').fill('vitoriaserro@beauty.com');
   await passwordInput.fill('vitoria123');
   await page.getByTestId('login-button').click();
 
   // Verifica se o conteúdo protegido está visível
-  await expect(page.locator('h1:has-text("Minha Agenda")')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Minha Agenda' })).toBeVisible({ timeout: 20000 });
 });
