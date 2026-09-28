@@ -45,7 +45,7 @@ export default function HorarioManager({ initialHorarios }: { initialHorarios: H
 
   const toggleDayStatus = async () => {
     const action = isDayFullyBlocked ? 'desbloquear' : 'bloquear';
-    const newStatus = isDayFullyBlocked ? 'livre' : 'ocupado';
+    const newStatus = isDayFullyBlocked ? 'livre' : 'bloqueado';
 
     if (!confirm(`Deseja ${action} TODOS os horários do dia ${formatarDataCurta(selectedDate)}?`)) return;
 
